@@ -192,7 +192,7 @@ msgid "faq.edit.success"
 msgstr "FAQ entry successfully updated."
 
 msgid "question.menu"
-msgstr "Ask the Heaven"
+msgstr "Ask the Coordination"
 
 msgid "question.delete.success"
 msgstr "Question deleted successfully."
