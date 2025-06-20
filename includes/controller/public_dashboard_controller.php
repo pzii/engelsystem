@@ -127,6 +127,8 @@ function public_dashboard_needed_angels($needed_angels, ?ShiftsFilter $filter = 
             if ($angeltype->show_on_dashboard) {
                 $result[] = [
                     'need'           => $need,
+                    'taken'          => $needed_angel['taken'],
+                    'total_required' => $needed_angel['count'],
                     'angeltype_name' => $angeltype->name,
                 ];
             }

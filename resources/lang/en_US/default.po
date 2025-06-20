@@ -1189,3 +1189,6 @@ msgstr "Opening times with partial staffing in the next 7 days"
 
 msgid "pubdash.stats.shifts.fullmentor"
 msgstr "Fully staffed opening times in the next 7 days"
+
+msgid "still %d needed"
+msgstr "still %d needed"
