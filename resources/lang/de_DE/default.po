@@ -2159,3 +2159,6 @@ msgstr "Öffnungszeiten mit Teilbesetzung in den nächsten 7 Tagen"
 
 msgid "pubdash.stats.shifts.fullmentor"
 msgstr "Vollständig besetzte Öffnungszeiten in den nächsten 7 Tagen"
+
+msgid "still %d needed"
+msgstr "noch %d benötigt"
