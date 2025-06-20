@@ -128,7 +128,7 @@ function public_dashboard_shift_render($shift)
 
         $panel_body .= '<br>' . icon('person')
             . '<span class="text-' . $shift['style'] . '">'
-            . $needed_angels['need'] . ' &times; ' . htmlspecialchars($short_shift_name)
+            . $needed_angels['taken'] . ' /  ' . $needed_angels['total_required']  . ' ' . htmlspecialchars($short_shift_name) . ' (' . __('still %d needed', [$needed_angels['need']]) . ')'
             . '</span>';
     }
 
