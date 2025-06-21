@@ -99,11 +99,20 @@ function public_dashboard_controller_free_shift(Shift $shift, ?ShiftsFilter $fil
         'needed_angels'  => public_dashboard_needed_angels($shift->neededAngels, $filter),
     ];
 
-    if (time() + 7 * 24 * 60 * 60 > $shift->start->timestamp) {
-        $free_shift['style'] = 'warning';
+    $isDanger = false;
+    $isWarning = false;
+    foreach ($free_shift['needed_angels'] as $needed_angels) {
+        $angels_required = $needed_angels['total_required'];
+        $angels_available = $needed_angels['taken'];
+
+        $isDanger  = $isDanger  || ($angels_available == 0);
+        $isWarning = $isWarning || ($angels_available < $angels_required);
     }
-    if (time() + 2 * 24 * 60 * 60 > $shift->start->timestamp) {
+
+    if ($isDanger) {
         $free_shift['style'] = 'danger';
+    } elseif ($isWarning) {
+        $free_shift['style'] = 'warning';
     }
 
     return $free_shift;
