@@ -37,7 +37,9 @@
                 {% endif %}
 
                 <div class="col-md-6">
-                    {{ f.input(
+                    {% set usernameKeepSync = session_pop('username_keep_sync', false) %}
+                    {{
+                        f.input(
                         'username',
                         __('general.nick'),
                         {
@@ -45,7 +47,9 @@
                             'max_length': 24,
                             'required': true,
                             'required_icon': true,
-                            'value': f.formData('username', ''),
+                            'disabled': usernameKeepSync,
+                            'info': usernameKeepSync ? __('registration.fromsso') : null,
+                            'value': f.formData('username', '')
                         }
                     ) }}
                 </div>
@@ -86,6 +90,7 @@
                 {% endif %}
 
                 <div class="col-md-6">
+                    {% set emailKeepSync = session_pop('email_keep_sync', false) %}
                     {{ f.input(
                         'email',
                         __('general.email'),
@@ -94,7 +99,9 @@
                             'max_length': 254,
                             'required': true,
                             'required_icon': true,
-                            'value': f.formData('email', ''),
+                            'disabled': emailKeepSync,
+                            'info': emailKeepSync ? __('registration.fromsso') : null,
+                            'value': f.formData('email', '')
                         }
                     ) }}
                 </div>
@@ -157,6 +164,7 @@
                 <h2>{{ __('general.name') }}</h2>
                 <div class="row">
                     <div class="col-md-6">
+                        {% set firstnameKeepSync = session_pop('first_name_keep_sync', false) %}
                         {{ f.input(
                             'firstname',
                             __('settings.profile.firstname'),
@@ -165,11 +173,14 @@
                                 'max_length': 64,
                                 'required': isFirstnameRequired,
                                 'required_icon': isFirstnameRequired,
+                                'disabled': firstnameKeepSync,
+                                'info': firstnameKeepSync ? __('registration.fromsso') : null,
                                 'value': f.formData('firstname', ''),
                             }
                         ) }}
                     </div>
                     <div class="col-md-6">
+                        {% set lastnameKeepSync = session_pop('last_name_keep_sync', false) %}
                         {{ f.input(
                             'lastname',
                             __('settings.profile.lastname'),
@@ -178,6 +189,8 @@
                                 'max_length': 64,
                                 'required': isLastnameRequired,
                                 'required_icon': isLastnameRequired,
+                                'disabled': lastnameKeepSync,
+                                'info': lastnameKeepSync ? __('registration.fromsso') : null,
                                 'value': f.formData('lastname', ''),
                             }
                         ) }}
