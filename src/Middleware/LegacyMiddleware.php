@@ -28,6 +28,19 @@ class LegacyMiddleware implements MiddlewareInterface
         'users',
     ];
 
+    protected array $login_pages = [
+        'user_angeltypes',
+        'locations',
+        'user_myshifts',
+        'user_shifts',
+    //    'admin_user',
+    //    'admin_arrive',
+    //    'admin_active',
+    //    'admin_free',
+    //    'admin_groups',
+    //    'admin_shifts',
+    ];
+
     public function __construct(protected ContainerInterface $container, protected Authenticator $auth)
     {
     }
@@ -71,9 +84,16 @@ class LegacyMiddleware implements MiddlewareInterface
             /** @var Translator $translator */
             $translator = $this->container->get('translator');
 
-            $page = 404;
-            $title = $translator->translate('page.404.title');
-            $content = $translator->translate('page.404.text');
+            // Redirect to login page
+            if (in_array($page, $this->login_pages)) {
+                $page = 403;
+                $title = $translator->translate('page.403.title');
+                $content = $translator->translate('page.403.text');
+            } else {
+                $page = 404;
+                $title = $translator->translate('page.404.title');
+                $content = $translator->translate('page.404.text');
+            }
         }
 
         return $this->renderPage($page, $title, $content);
