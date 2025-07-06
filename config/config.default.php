@@ -125,6 +125,8 @@ return [
             'first_name' => 'first-name',
             // Info last name field (optional)
             'last_name' => 'last-name',
+            // User-data fields to be updated from OAuth provider on each login (optional)
+            'sso_fields_to_sync' => [],
             // User URL to provider, linked on provider settings page (optional)
             'url' => '[provider page]',
             // Whether info attributes are nested arrays (optional)
@@ -347,6 +349,13 @@ return [
     // Regular expression describing a FALSE username.
     // Per default usernames must only contain alphanumeric chars, "-", "_" or ".".
     'username_regex' => (string) env('USERNAME_REGEX', '/([^\p{L}\p{N}_.-]+)/ui'),
+
+    // Regular expression and replacement character used for transformation
+    // of the username synced with SSO. This transformation is applied only to
+    // to usernames imported from and kept in sync with OAuth (i.e., if the
+    // username is included in sso_fields_to_sync and the user logs in via OAuth).
+    'username_sync_pattern' => '/[^\p{L}\p{N}_.-]/ui',
+    'username_sync_replace' => '-',
 
     // Enable first name and last name
     'enable_full_name'        => (bool) env('ENABLE_FULL_NAME', false),
