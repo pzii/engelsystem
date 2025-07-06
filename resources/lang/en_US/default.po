@@ -359,6 +359,9 @@ msgstr "The %s is allowed to send me an e-mail "
 msgid "registration.email_system.info"
 msgstr "Detailed preferences can be set in your profile."
 
+msgid "registration.fromsso"
+msgstr "This value is kept in sync with SSO and cannot be changed."
+
 msgid "settings.profile.email_news"
 msgstr "Notify me of new news."
 
