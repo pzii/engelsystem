@@ -628,6 +628,16 @@ return [
                     'hidden' => true,
                     'default' => false,
                 ],
+                'username_sync_pattern' => [
+                    'type' => 'string',
+                    'hidden' => true,
+                    'default' => '/[^\p{L}\p{N}_.-]/ui',
+                ],
+                'username_sync_replace' => [
+                    'type' => 'string',
+                    'hidden' => true,
+                    'default' => '-',
+                ],
                 'environment' => [
                     'type' => 'select',
                     'hidden' => true,
