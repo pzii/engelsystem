@@ -349,3 +349,24 @@ msgstr "Event Ende muss nach dem Event Start liegen."
 
 msgid "validation.teardown_end.after"
 msgstr "Abbau Ende muss nach dem Event Ende liegen."
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
