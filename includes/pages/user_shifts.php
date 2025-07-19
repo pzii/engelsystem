@@ -352,7 +352,7 @@ function view_user_shifts()
             view(__DIR__ . '/../../resources/views/pages/user-shifts.html', [
                 'title'         => shifts_title(),
                 'add_link'      => auth()->can('admin_shifts') ? $link : '',
-                'location_select' => make_select(
+                'location_select' => config('hide_locations_in_shift_filter') ? '' : make_select(
                     $locations,
                     $shiftsFilter->getLocations(),
                     'locations',
@@ -374,7 +374,7 @@ function view_user_shifts()
                     $end_day
                 ),
                 'end_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('end_time', 'end_time', $end_time),
-                'type_select'   => make_select(
+                'type_select'   => config('hide_roles_in_shift_filter') ? '' : make_select(
                     $types,
                     $shiftsFilter->getTypes(),
                     'types',
@@ -384,7 +384,7 @@ function view_user_shifts()
                     $ownAngelTypes,
                     'limit-height',
                 ),
-                'filled_select' => make_select(
+                'filled_select' => config('hide_occupancy_in_shift_filter') ? '' : make_select(
                     $filled,
                     $shiftsFilter->getFilled(),
                     'filled',
