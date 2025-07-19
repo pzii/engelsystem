@@ -209,6 +209,7 @@ class ShiftCalendarRenderer
         }
 
         return div('shift-calendar table-responsive', [
+                $this->renderDateLane(),
                 $this->renderTimeLane(),
                 $this->renderShiftLanes(),
             ]) . $this->renderLegend();
@@ -381,12 +382,62 @@ class ShiftCalendarRenderer
         if (array_key_exists($dateStr, $this->startAndEndPerDay)) {
             list($startOfDay, $endOfDay) = $this->startAndEndPerDay[$dateStr];
 
-            if ($startOfDay <= $thistimeCarbon && $thistimeCarbon <= $endOfDay) {
+            if ($startOfDay <= $thistimeCarbon && $thistimeCarbon < $endOfDay) {
                 return true;
             }
         }
         return false;
     }
+
+    /**
+     * Renders the left date lane
+     *
+     * @return string
+     */
+    private function renderDateLane()
+    {
+        $bg = 'bg-' . theme_type();
+
+        $time_slot = [
+            div('header ' . $bg, []),
+        ];
+
+        $start_time = Carbon::createFromTimestamp($this->getFirstBlockStartTime(), Carbon::now()->timezone);
+        $end_date = $this->getDateStr(Carbon::createFromTimestamp($this->getLastBlockEndTime(), Carbon::now()->timezone));
+
+        $first = true;
+        $current_time = $start_time;
+        do {
+            $day = $this->getDateStr($current_time);
+
+            if (array_key_exists($day, $this->startAndEndPerDay)) {
+                list($startOfDay, $endOfDay) = $this->startAndEndPerDay[$day];
+                if ($first) {
+                    $startOfDay = $start_time;
+                    $first = false;
+                }
+                $minutesPerRow = ShiftCalendarRenderer::SECONDS_PER_ROW / 60;
+                $num_rows = $startOfDay->floorMinute($minutesPerRow)->diffInSeconds($endOfDay->ceilMinute($minutesPerRow)) / ShiftCalendarRenderer::SECONDS_PER_ROW;
+
+                $time_slot[] = $this->renderDayTick($startOfDay, $num_rows);
+            }
+
+            $current_time->addDay();
+        } while ($day != $end_date);
+
+        return div('lane date', $time_slot);
+    }
+
+    private function renderDayTick($time, $blocks)
+    {
+        $class = 'dow bg-' . theme_type();
+
+        return div($class, [
+            __($time->format('l')) . ', ' . $time->format(__('m-d')),
+        ], '', 'style="height: ' . ($blocks * 30) . 'px"');
+    }
+
+
 
     /**
      * @param Shift[] $shifts
