@@ -465,6 +465,11 @@ return [
     // mechanism date-based (i.e., always showing whole days)
     'enable_date_only_shift_filtering' => env('ENABLE_DATE_ONLY_SHIFT_FILTERING', false),
 
+    // Hide particular filtering options in the shifts filter
+    'hide_locations_in_shift_filter' => env('HIDE_LOCATIONS_IN_SHIFT_FILTER', false),
+    'hide_roles_in_shift_filter'     => env('HIDE_ROLES_IN_SHIFT_FILTER', false),
+    'hide_occupancy_in_shift_filter' => env('HIDE_OCCUPANCY_IN_SHIFT_FILTER', false),
+
     // Limits the number of past days to show in the shift-view filter, e.g. settings this to 1 will
     // allow filtering for yesterday's shifts. When set to null, no filtering is applied.
     'limit_to_past_days_in_shift_filter' => env('LIMIT_TO_PAST_DAYS_IN_SHIFT_FILTER', null),

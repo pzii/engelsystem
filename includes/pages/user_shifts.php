@@ -117,9 +117,19 @@ function update_ShiftsFilter_timerange(ShiftsFilter $shiftsFilter, $days)
 function update_ShiftsFilter(ShiftsFilter $shiftsFilter, $user_shifts_admin, $days)
 {
     $shiftsFilter->setUserShiftsAdmin($user_shifts_admin);
-    $shiftsFilter->setFilled(check_request_int_array('filled', $shiftsFilter->getFilled()));
-    $shiftsFilter->setLocations(check_request_int_array('locations', $shiftsFilter->getLocations()));
-    $shiftsFilter->setTypes(check_request_int_array('types', $shiftsFilter->getTypes()));
+
+    $shiftsFilter->setFilled(config('hide_occupancy_in_shift_filter')
+        ? [0, 1]
+        : check_request_int_array('filled', $shiftsFilter->getFilled()));
+
+    $shiftsFilter->setLocations(config('hide_locations_in_shift_filter')
+        ? load_locations()->pluck('id')->all()
+        : check_request_int_array('locations', $shiftsFilter->getLocations()));
+
+    $shiftsFilter->setTypes(config('hide_roles_in_shift_filter')
+        ? AngelType::query()->get()->pluck('id')->all()
+        : check_request_int_array('types', $shiftsFilter->getTypes()));
+
     update_ShiftsFilter_timerange($shiftsFilter, $days);
 }
 
@@ -323,7 +333,7 @@ function view_user_shifts()
             view(__DIR__ . '/../../resources/views/pages/user-shifts.html', [
                 'title'         => shifts_title(),
                 'add_link'      => auth()->can('admin_shifts') ? $link : '',
-                'location_select' => make_select(
+                'location_select' => config('hide_locations_in_shift_filter') ? '' : make_select(
                     $locations,
                     $shiftsFilter->getLocations(),
                     'locations',
@@ -343,7 +353,7 @@ function view_user_shifts()
                     $end_day
                 ),
                 'end_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('end_time', 'end_time', $end_time),
-                'type_select'   => make_select(
+                'type_select'   => config('hide_roles_in_shift_filter') ? '' : make_select(
                     $types,
                     $shiftsFilter->getTypes(),
                     'types',
@@ -352,7 +362,7 @@ function view_user_shifts()
                     . icon('question-circle') . '</a>',
                     $ownAngelTypes
                 ),
-                'filled_select' => make_select(
+                'filled_select' => config('hide_occupancy_in_shift_filter') ? '' : make_select(
                     $filled,
                     $shiftsFilter->getFilled(),
                     'filled',
