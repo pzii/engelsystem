@@ -37,6 +37,11 @@ enum ShiftSignupStatus: string
     case SHIFT_ENDED = 'SHIFT_ENDED';
 
     /**
+     * Shift requires location access; user does not have access
+     */
+    case MISSING_LOCATION_ACCESS = 'MISSING_LOCATION_ACCESS';
+
+    /**
      * Shift is not available yet
      */
     case NOT_YET = 'NOT_YET';

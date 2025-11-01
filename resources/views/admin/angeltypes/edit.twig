@@ -106,6 +106,19 @@
                         },
                     ) }}
                 {% endif %}
+                {% if config('location_access_enabled') %}
+                    {{ f.checkbox(
+                        'requires_location_access',
+                        __('angeltype.requires_location_access'),
+                        {
+                            'checked': f.formData(
+                                'requires_location_access',
+                                angelType ? angelType.requires_location_access : false
+                            ),
+                            'disabled': isSupporter,
+                        },
+                    ) }}
+                {% endif %}
             </div>
         </div>
 

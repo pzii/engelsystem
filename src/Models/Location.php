@@ -20,6 +20,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string|null                       $map_url
  * @property string|null                       $description
  * @property string|null                       $dect
+ * @property string|null                       $access_group
  * @property Carbon|null                       $created_at
  * @property Carbon|null                       $updated_at
  *
@@ -44,9 +45,10 @@ class Location extends BaseModel
 
     /** @var array<string, null> default attributes */
     protected $attributes = [ // phpcs:ignore
-        'map_url'     => null,
-        'description' => null,
-        'dect'        => null,
+        'map_url'      => null,
+        'description'  => null,
+        'dect'         => null,
+        'access_group' => null,
     ];
 
     /** @var array<string> */
@@ -70,5 +72,19 @@ class Location extends BaseModel
     public function shifts(): HasMany
     {
         return $this->hasMany(Shift::class);
+    }
+
+    public function getAccessGroupFriendlyName(): string
+    {
+        if ($this->access_group === null || $this->access_group === '') {
+            return '';
+        }
+
+        $validAccessGroups = config('valid_location_access_groups');
+        if (in_array($this->access_group, array_keys($validAccessGroups), true)) {
+            return $validAccessGroups[$this->access_group];
+        }
+
+        return $this->access_group . ' (INVALID)';
     }
 }

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\BaseModel;
 use Engelsystem\Models\Group;
+use Engelsystem\Models\Location;
 use Engelsystem\Models\LogEntry;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\News;
@@ -66,6 +67,7 @@ use Illuminate\Support\Collection as SupportCollection;
  * @property-read Collection|Message[]          $messages
  * @property-read Collection|Shift[]            $shiftsCreated
  * @property-read Collection|Shift[]            $shiftsUpdated
+ * @property-read Collection|Location[]         $accessibleLocations
  *
  * @method static QueryBuilder|User[] whereId($value)
  * @method static QueryBuilder|User[] whereName($value)
@@ -288,6 +290,32 @@ class User extends BaseModel
     public function shiftsUpdated(): HasMany
     {
         return $this->hasMany(Shift::class, 'updated_by');
+    }
+
+    /**
+     * Check if the user has access to a specific location by ID.
+     */
+    public function hasAccessTo(int $locationId): bool
+    {
+        $location = Location::find($locationId);
+        if (!$location) {
+            // Don't grant access to non-existing locations
+            return false;
+        }
+
+        if (!$location->access_group) {
+            // If a location has no access group defined, then it is accessible to all users
+            return true;
+        }
+
+        // Check all OAuth providers for matching access groups
+        foreach ($this->oauth as $oauth) {
+            if ($oauth->oauth_groups && in_array($location->access_group, $oauth->oauth_groups, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getDisplayNameAttribute(): string

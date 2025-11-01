@@ -39,6 +39,9 @@
                                 <th>{{ __('general.name') }}</th>
                                 <th>{{ m.icon('mortarboard-fill') }} {{ __('angeltype.restricted') }}</th>
                                 <th>{{ m.icon('pencil-square') }} {{ __('shift.self_signup.allowed') }}</th>
+                                {% if config('location_access_enabled') %}
+                                    <th>{{ m.icon('door-open-fill') }} {{ __('angeltype.requires_location_access') }}</th>
+                                {% endif %}
                                 <th>{{ __('angeltype.membership') }}</th>
                                 <th></th>
                             </tr>
@@ -57,6 +60,9 @@
                                     <td>{{ angelType.restricted ? m.icon('mortarboard-fill'): ''}}</td>
 
                                     <td>{{ m.iconBool(angelType.shift_self_signup) }}</td>
+                                    {% if config('location_access_enabled') %}
+                                        <td>{{ angelType.requires_location_access ? m.icon('door-open-fill') : '' }}</td>
+                                    {% endif %}
                                     {% set userAngelTypeMembership = enum('Engelsystem\\Models\\UserAngelTypeMembership') %}
                                     <td>
                                         {% if userAngelType %}

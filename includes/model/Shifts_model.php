@@ -532,6 +532,11 @@ function Shift_signup_allowed_angel(
         $user_angeltype = UserAngelType::whereUserId($user->id)->where('angel_type_id', $angeltype->id)->first();
     }
 
+    if (config('location_access_enabled') && $angeltype->requires_location_access && !$user->hasAccessTo($shift->location_id)) {
+        // you cannot join if you don't have access to the location
+        return new ShiftSignupState(ShiftSignupStatus::MISSING_LOCATION_ACCESS, $free_entries);
+    }
+
     if (
         empty($user_angeltype)
         || !$angeltype->shift_self_signup

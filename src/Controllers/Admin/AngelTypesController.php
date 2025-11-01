@@ -100,6 +100,7 @@ class AngelTypesController extends BaseController
                 'hide_on_shift_view' => 'optional|checked',
                 'requires_driver_license' => 'optional|checked',
                 'requires_ifsg_certificate' => 'optional|checked',
+                'requires_location_access' => 'optional|checked',
             ]
         );
 
@@ -115,6 +116,7 @@ class AngelTypesController extends BaseController
             $angelType->hide_on_shift_view = (bool) $data['hide_on_shift_view'];
             $angelType->requires_driver_license = (bool) $data['requires_driver_license'];
             $angelType->requires_ifsg_certificate = (bool) $data['requires_ifsg_certificate'];
+            $angelType->requires_location_access = (bool) $data['requires_location_access'];
         }
 
         $angelType->description = (string) $data['description'];
@@ -127,7 +129,7 @@ class AngelTypesController extends BaseController
         $this->log->info(
             '{new} angel type "{name}" ({id}): {restricted} {shift_self_signup} {description}, '
             . '{contact_name} {contact_dect}{contact_email}, {show_on_dashboard}, {hide_register}, '
-            . '{hide_on_shift_view}{requires_driver_license}{requires_ifsg}',
+            . '{hide_on_shift_view}{requires_driver_license}{requires_ifsg}{requires_location_access}',
             [
                 'new' => $angelType->wasRecentlyCreated ? 'Created' : 'Updated',
                 'id' => $angelType->id,
@@ -148,6 +150,10 @@ class AngelTypesController extends BaseController
                 'requires_ifsg' =>
                     $this->config->get('ifsg_enabled') && $angelType->requires_ifsg_certificate
                         ? ', requires ifsg certificate'
+                        : '',
+                'requires_location_access' =>
+                    $this->config->get('location_access_enabled') && $angelType->requires_location_access
+                        ? ', requires location access'
                         : '',
             ]
         );

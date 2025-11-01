@@ -121,6 +121,7 @@ class AngelTypesControllerTest extends ControllerTestCase
         $this->setExpects($this->auth, 'can', ['angeltypes.edit'], true, $this->any());
         $this->config->set('driving_license_enabled', true);
         $this->config->set('ifsg_enabled', true);
+        $this->config->set('location_access_enabled', true);
 
         $this->setExpects($this->redirect, 'to', ['/angeltypes']);
 
@@ -136,10 +137,13 @@ class AngelTypesControllerTest extends ControllerTestCase
             'hide_register' => 'checked',
             'requires_driver_license' => 'checked',
             'requires_ifsg_certificate' => 'checked',
+            'requires_location_access' => 'checked',
         ]);
 
         $this->controller->save($this->request);
 
+        $savedAngelType = AngelType::whereName('SomeTestAngelType')->firstOrFail();
+        $this->assertTrue($savedAngelType->requires_location_access);
         $this->assertTrue($this->log->hasInfoThatContains('angel type'));
         $this->assertHasNotification('angeltype.edit.success');
     }
