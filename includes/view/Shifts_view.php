@@ -113,7 +113,7 @@ function Shift_editor_info_render(Shift $shift)
  * @param AngelType $angeltype
  * @return string
  */
-function Shift_signup_button_render(Shift $shift, AngelType $angeltype)
+function Shift_signup_button_render(Shift $shift, AngelType $angeltype, bool $allowSignUp)
 {
     /** @var UserAngelType|null $user_angeltype */
     $user_angeltype = UserAngelType::whereUserId(auth()->user()->id)
@@ -125,7 +125,7 @@ function Shift_signup_button_render(Shift $shift, AngelType $angeltype)
         || auth()->user()->isAngelTypeSupporter($angeltype)
         || auth()->can('admin_user_angeltypes')
     ) {
-        return button(shift_entry_create_link($shift, $angeltype), __('Sign up'));
+        return button(shift_entry_create_link($shift, $angeltype), __('Sign up'), disabled: !$allowSignUp);
     } elseif (empty($user_angeltype)) {
         return button(
             url('/user-angeltypes', ['action' => 'add', 'angeltype_id' => $angeltype->id]),
@@ -177,7 +177,7 @@ function Shift_view(
     $needed_angels = '';
     $neededAngels = new Collection($shift->neededAngels);
     foreach ($neededAngels as $needed_angeltype) {
-        $needed_angels .= Shift_view_render_needed_angeltype($needed_angeltype, $angeltypes, $shift, $user_shift_admin, $supportsAngelTypes);
+        $needed_angels .= Shift_view_render_needed_angeltype($needed_angeltype, $angeltypes, $shift, $user_shift_admin, $supportsAngelTypes, $shift_signup_state->isSignupAllowed());
     }
 
     $shiftEntry = $shift->shiftEntries;
@@ -195,7 +195,7 @@ function Shift_view(
                     ->where('angel_type_id', $type)
                     ->whereNull('freeloaded_by')
                     ->count(),
-            ], $angeltypes, $shift, $user_shift_admin, $supportsAngelTypes);
+            ], $angeltypes, $shift, $user_shift_admin, $supportsAngelTypes, $shift_signup_state->isSignupAllowed());
         }
     }
 
@@ -326,6 +326,10 @@ function Shift_view_alert_render(
         ), true);
     }
 
+    if ($shift_signup_state->getState() === ShiftSignupStatus::MISSING_LOCATION_ACCESS) {
+        $alert = warning(__('shift.location.access_required'), true);
+    }
+
     return $alert;
 }
 
@@ -342,7 +346,8 @@ function Shift_view_render_needed_angeltype(
     $angeltypes,
     Shift $shift,
     $user_shift_admin,
-    $supportsAngelTypes
+    $supportsAngelTypes,
+    bool $allowSignUp
 ) {
     $angeltype = $angeltypes[$needed_angeltype['angel_type_id']];
     $angeltype_supporter = $supportsAngelTypes->contains($needed_angeltype['angel_type_id'])
@@ -359,7 +364,7 @@ function Shift_view_render_needed_angeltype(
     }
     $needed_angels .= '<div class="list-group-item">';
 
-    $needed_angels .= '<div class="float-end m-3">' . Shift_signup_button_render($shift, $angeltype) . '</div>';
+    $needed_angels .= '<div class="float-end m-3">' . Shift_signup_button_render($shift, $angeltype, $allowSignUp) . '</div>';
 
     $needed_angels .= '<h3>' . AngelType_name_render($angeltype) . '</h3>';
     $bar_max = max($needed_angeltype['count'] * 10, $needed_angeltype['taken'] * 10, 10);

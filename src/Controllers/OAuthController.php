@@ -12,8 +12,10 @@ use Engelsystem\Http\Redirector;
 use Engelsystem\Http\Request;
 use Engelsystem\Http\Response;
 use Engelsystem\Http\UrlGenerator;
+use Engelsystem\Models\Location;
 use Engelsystem\Models\OAuth;
 use Engelsystem\Models\User\User;
+use Engelsystem\Models\UserLocation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -129,6 +131,65 @@ class OAuthController extends BaseController
 
         if ($firstNameUpdated || $lastNameUpdated) {
             $user->personalData->save();
+        }
+
+
+        $currentUserLocations = $user->accessibleLocations()->get();
+
+        if ($userdata->has('groups')) {
+            $newUserLocations = Location::query()
+                ->where('access_group', '!=', null)
+                ->where('access_group', '!=', '')
+                ->whereIn('access_group', $userdata['groups'])
+                ->get();
+
+            // Find locations the user is no longer allowed to access
+            $locationsToRemove = $currentUserLocations->filter(function (Location $location) use ($newUserLocations) {
+                return !$newUserLocations->pluck('id')->contains($location->id);
+            });
+
+            foreach ($locationsToRemove as $location) {
+                if ($location->access_group != null && $location->access_group != '') {
+                    $this->log->info(
+                        'Lost access to location "{locationName}" during OAuth login via access group "{accessGroup}"',
+                        [
+                            'locationName' => $location->name,
+                            'accessGroup' => $location->access_group,
+                            'user_id' => $user->id,
+                        ]
+                    );
+                } else {
+                    $this->log->info(
+                        'Removing explicit access to location "{locationName}" during OAuth login;' .
+                        'location no longer has an access group.',
+                        [
+                            'locationName' => $location->name,
+                            'user_id' => $user->id,
+                        ]
+                    );
+                }
+
+                $location['pivot']->delete();
+            }
+
+            // Find locations the user is now allowed to access
+            $locationsToAdd = $newUserLocations->filter(function (Location $location) use ($currentUserLocations) {
+                return !$currentUserLocations->pluck('id')->contains($location->id);
+            });
+            foreach ($locationsToAdd as $location) {
+                $this->log->info(
+                    'Granted access to location "{locationName}" during OAuth login via access group "{accessGroup}"',
+                    [
+                    'locationName' => $location->name,
+                    'accessGroup' => $location->access_group,
+                    'user_id' => $user->id,
+                    ]
+                );
+                $newLocation = new UserLocation();
+                $newLocation->user_id = $user->id;
+                $newLocation->location_id = $location->id;
+                $newLocation->save();
+            }
         }
     }
 

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\BaseModel;
 use Engelsystem\Models\Group;
+use Engelsystem\Models\Location;
 use Engelsystem\Models\LogEntry;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\News;
@@ -19,6 +20,7 @@ use Engelsystem\Models\Session;
 use Engelsystem\Models\Shifts\Shift;
 use Engelsystem\Models\Shifts\ShiftEntry;
 use Engelsystem\Models\UserAngelType;
+use Engelsystem\Models\UserLocation;
 use Engelsystem\Models\Worklog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -66,6 +68,7 @@ use Illuminate\Support\Collection as SupportCollection;
  * @property-read Collection|Message[]          $messages
  * @property-read Collection|Shift[]            $shiftsCreated
  * @property-read Collection|Shift[]            $shiftsUpdated
+ * @property-read Collection|Location[]         $accessibleLocations
  *
  * @method static QueryBuilder|User[] whereId($value)
  * @method static QueryBuilder|User[] whereName($value)
@@ -288,6 +291,19 @@ class User extends BaseModel
     public function shiftsUpdated(): HasMany
     {
         return $this->hasMany(Shift::class, 'updated_by');
+    }
+
+    public function accessibleLocations(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Location::class, 'users_locations_access')
+            ->using(UserLocation::class)
+            ->withPivot(UserLocation::getPivotAttributes());
+    }
+
+    public function hasAccessTo(Location $location): bool
+    {
+        return $this->accessibleLocations()->pluck('location_id')->contains($location->id);
     }
 
     public function getDisplayNameAttribute(): string
