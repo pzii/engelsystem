@@ -15,19 +15,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
- * @property int                               $id
- * @property string                            $name
- * @property string                            $description
- * @property string                            $contact_name
- * @property string                            $contact_dect
- * @property string                            $contact_email
- * @property boolean                           $restricted # If users need an introduction
- * @property boolean                           $requires_driver_license # If users must have a driver license
- * @property boolean                           $requires_ifsg_certificate # If users must have a ifsg certificate
- * @property boolean                           $shift_self_signup # Users can sign up for shifts
- * @property boolean                           $show_on_dashboard # Show on public dashboard
- * @property boolean                           $hide_register # Hide from registration page
- * @property boolean                           $hide_on_shift_view # Hide from shift page
+ * @property int     $id
+ * @property string  $name
+ * @property string  $description
+ * @property string  $contact_name
+ * @property string  $contact_dect
+ * @property string  $contact_email
+ * @property boolean $restricted # If users need an introduction
+ * @property boolean $requires_driver_license # If users must have a driver license
+ * @property boolean $requires_ifsg_certificate # If users must have a ifsg certificate
+ * @property boolean $requires_location_access # If users must have access to the associated location
+ * @property boolean $shift_self_signup # Users can sign up for shifts
+ * @property boolean $show_on_dashboard # Show on public dashboard
+ * @property boolean $hide_register # Hide from registration page
+ * @property boolean $hide_on_shift_view # Hide from shift page
  *
  * @property-read Collection|NeededAngelType[] $neededBy
  * @property-read UserAngelType                $pivot
@@ -60,6 +61,7 @@ class AngelType extends BaseModel
         'restricted'                => true,
         'requires_driver_license'   => false,
         'requires_ifsg_certificate' => false,
+        'requires_location_access'  => false,
         'shift_self_signup'         => true,
         'show_on_dashboard'         => true,
         'hide_register'             => false,
@@ -82,6 +84,7 @@ class AngelType extends BaseModel
         'restricted',
         'requires_driver_license',
         'requires_ifsg_certificate',
+        'requires_location_access',
         'shift_self_signup',
         'show_on_dashboard',
         'hide_register',
