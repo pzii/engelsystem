@@ -289,6 +289,7 @@ class User
                 'identifier'    => $this->session->get('oauth2_user_id'),
                 'access_token'  => $this->session->get('oauth2_access_token'),
                 'refresh_token' => $this->session->get('oauth2_refresh_token'),
+                'oauth_groups'  => $this->session->get('oauth2_groups', []),
                 'expires_at'    => $this->session->get('oauth2_expires_at'),
             ]);
             $oauth->user()
@@ -299,6 +300,7 @@ class User
             $this->session->remove('oauth2_user_id');
             $this->session->remove('oauth2_access_token');
             $this->session->remove('oauth2_refresh_token');
+            $this->session->remove('oauth2_groups');
             $this->session->remove('oauth2_expires_at');
 
             $this->logger->info(
