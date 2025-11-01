@@ -554,6 +554,9 @@ msgstr ""
 msgid "angeltype.driving_license.required.info.preview"
 msgstr "This angel type requires a driver's license."
 
+msgid "angeltype.location_access.required"
+msgstr "Requires individual access to the location"
+
 msgid "ifsg.info"
 msgstr "Health instruction information"
 
@@ -779,6 +782,9 @@ msgstr "Here you can find the list of teams and their tasks. If you have further
 msgid "angeltypes.restricted"
 msgstr "Requires introduction"
 
+msgid "angeltypes.requires_location_access"
+msgstr "Requires location access"
+
 msgid "angeltypes.restricted.info"
 msgstr "Angel types that require introduction can only be joined by Angels "
 "after being enabled by a supporter (double opt-in)."
@@ -830,6 +836,12 @@ msgstr "Locations"
 
 msgid "location.map_url"
 msgstr "Map"
+
+msgid "location.access_group"
+msgstr "Access group"
+
+msgid "location.access_group.info"
+msgstr "Access group that is required to access this location. Can be used as requirement to shift signup."
 
 msgid "location.required_angels"
 msgstr "Required angels (on schedule import or copy)"
@@ -1026,6 +1038,9 @@ msgstr "Schedule %s via shift type %s"
 
 msgid "shift.angeltype_source.location"
 msgstr "Schedule %s via location %s"
+
+msgid "shift.location.access_required"
+msgstr "This shift requires individual access to its location. You cannot sign up without access!"
 
 msgid "general.logout"
 msgstr "Logout"

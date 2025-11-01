@@ -46,7 +46,7 @@ class ShiftSignupState
     {
         return match ($state) {
             ShiftSignupStatus::NOT_ARRIVED, ShiftSignupStatus::NOT_YET, ShiftSignupStatus::SHIFT_ENDED => 100,
-            ShiftSignupStatus::SIGNED_UP => 90,
+            ShiftSignupStatus::SIGNED_UP, ShiftSignupStatus::MISSING_LOCATION_ACCESS => 90,
             ShiftSignupStatus::FREE      => 80,
             ShiftSignupStatus::ANGELTYPE, ShiftSignupStatus::COLLIDES => 70,
             ShiftSignupStatus::OCCUPIED,  ShiftSignupStatus::ADMIN    => 60,

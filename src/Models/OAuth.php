@@ -15,6 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property string      $identifier
  * @property string|null $access_token
  * @property string|null $refresh_token
+ * @property array|null  $oauth_groups
  * @property Carbon|null $expires_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -36,6 +37,7 @@ class OAuth extends BaseModel
     protected $attributes = [ // phpcs:ignore
         'access_token'  => null,
         'refresh_token' => null,
+        'oauth_groups'  => null,
         'expires_at'    => null,
     ];
 
@@ -45,6 +47,7 @@ class OAuth extends BaseModel
     /** @var array<string, string> */
     protected $casts = [ // phpcs:ignore
         'user_id' => 'integer',
+        'oauth_groups' => 'array',
         'expires_at' => 'datetime',
     ];
 
@@ -54,6 +57,7 @@ class OAuth extends BaseModel
         'identifier',
         'access_token',
         'refresh_token',
+        'oauth_groups',
         'expires_at',
     ];
 }

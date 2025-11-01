@@ -124,6 +124,7 @@ function angeltype_edit_controller()
 
             $angeltype->requires_driver_license = $request->has('requires_driver_license');
             $angeltype->requires_ifsg_certificate = $request->has('requires_ifsg_certificate');
+            $angeltype->requires_location_access = $request->has('requires_location_access');
         }
 
         $angeltype->description = strip_request_item_nl('description', $angeltype->description);
@@ -144,6 +145,9 @@ function angeltype_edit_controller()
                     : '')
                 . (config('ifsg_enabled')
                     ? (($angeltype->requires_ifsg_certificate ? ', requires ifsg certificate' : '') . ', ')
+                    : '')
+                . (config('location_access_enabled')
+                    ? (($angeltype->requires_location_access ? ', requires location access' : '') . ', ')
                     : '')
                 . $angeltype->contact_name . ', '
                 . $angeltype->contact_dect . ', '
@@ -336,6 +340,7 @@ function angeltypes_list_controller()
 
         $angeltype->is_restricted = $angeltype->restricted ? icon('mortarboard-fill') : '';
         $angeltype->shift_self_signup_allowed = $angeltype->shift_self_signup ? icon('pencil-square') : '';
+        $angeltype->shift_requires_location_access = $angeltype->requires_location_access ? icon('door-open-fill') : '';
 
         $angeltype->name = '<a href="'
             . url('/angeltypes', ['action' => 'view', 'angeltype_id' => $angeltype->id])

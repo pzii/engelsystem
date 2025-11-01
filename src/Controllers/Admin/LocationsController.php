@@ -82,10 +82,11 @@ class LocationsController extends BaseController
         $data = $this->validate(
             $request,
             [
-                'name'        => 'required|max:35',
-                'description' => 'optional',
-                'dect'        => 'optional',
-                'map_url'     => 'optional|url|max:300',
+                'name'         => 'required|max:35',
+                'description'  => 'optional',
+                'dect'         => 'optional',
+                'map_url'      => 'optional|url|max:300',
+                'access_group' => 'optional|max:100',
             ] + $validation
         );
 
@@ -97,6 +98,7 @@ class LocationsController extends BaseController
         $location->description = $data['description'];
         $location->dect = $data['dect'];
         $location->map_url = $data['map_url'];
+        $location->access_group = $data['access_group'];
 
         $location->save();
         $location->neededAngelTypes()->getQuery()->delete();
@@ -122,14 +124,15 @@ class LocationsController extends BaseController
         }
 
         $this->log->info(
-            'Updated location "{name}" ({id}): {description} {dect} {map_url} {angels}',
+            'Updated location "{name}" ({id}): {description} {dect} {map_url} {angels} {access_group}',
             [
-                'id'          => $location->id,
-                'name'        => $location->name,
-                'description' => $location->description,
-                'dect'        => $location->dect,
-                'map_url'     => $location->map_url,
-                'angels'      => $angelsInfo,
+                'id'           => $location->id,
+                'name'         => $location->name,
+                'description'  => $location->description,
+                'dect'         => $location->dect,
+                'map_url'      => $location->map_url,
+                'angels'       => $angelsInfo,
+                'access_group' => $location->access_group,
             ]
         );
 
@@ -170,6 +173,7 @@ class LocationsController extends BaseController
                 'location' => $location,
                 'angel_types' => $angeltypes,
                 'needed_angel_types' => $location?->neededAngelTypes,
+                'access_groups' => config('valid_location_access_groups'),
             ]
         );
     }

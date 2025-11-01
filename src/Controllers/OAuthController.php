@@ -131,6 +131,35 @@ class OAuthController extends BaseController
         if ($firstNameUpdated || $lastNameUpdated) {
             $user->personalData->save();
         }
+
+        $oauth = $user->oauth()->first();
+        if ($oauth && $userdata->has('groups')) {
+            $newGroups = $userdata['groups'];
+            $oldGroups = $oauth->oauth_groups ?? [];
+
+            $removedGroups = array_diff($oldGroups, $newGroups);
+            $addedGroups = array_diff($newGroups, $oldGroups);
+
+            if (!empty($addedGroups) || !empty($removedGroups)) {
+                asort($newGroups, SORT_STRING | SORT_FLAG_CASE);
+
+                $oauth->oauth_groups = $newGroups;
+                $oauth->save();
+
+                $this->log->warning(
+                    "Updated OAuth groups for user {user_id} during login.\n" .
+                    "Added: [{added_groups}]\nRemoved: [{removed_groups}]\n" .
+                    "Previous: [{old_groups}]\nNew: [{new_groups}]",
+                    [
+                        'user_id'        => $user->id,
+                        'added_groups'   => implode(', ', $addedGroups),
+                        'removed_groups' => implode(', ', $removedGroups),
+                        'old_groups'     => implode(', ', $oldGroups),
+                        'new_groups'     => implode(', ', $newGroups),
+                    ]
+                );
+            }
+        }
     }
 
     public function index(Request $request): Response
@@ -214,6 +243,7 @@ class OAuthController extends BaseController
             $oauth->refresh_token = $accessToken->getRefreshToken();
             $oauth->expires_at = $expirationTime;
 
+            // We'll update groups later after loading user data
             $oauth->save();
         }
 
@@ -225,6 +255,13 @@ class OAuthController extends BaseController
 
         $connectProvider = $this->session->get('oauth2_connect_provider');
         $this->session->remove('oauth2_connect_provider');
+        // Load user data to get groups
+        $resourceData = $resourceOwner->toArray();
+        if (!empty($config['nested_info'])) {
+            $resourceData = Arr::dot($resourceData);
+        }
+        $userdata = new Collection($resourceData);
+
         // Connect user with oauth
         if (!$oauth && $user && $connectProvider && $connectProvider == $providerName) {
             $oauth = new OAuth([
@@ -232,6 +269,7 @@ class OAuthController extends BaseController
                 'identifier'    => $resourceId,
                 'access_token'  => $accessToken->getToken(),
                 'refresh_token' => $accessToken->getRefreshToken(),
+                'oauth_groups'  => $userdata->get($config['groups'] ?? 'groups', []),
                 'expires_at'    => $expirationTime,
             ]);
 
@@ -255,14 +293,6 @@ class OAuthController extends BaseController
             );
             $this->addNotification('oauth.connected');
         }
-
-        // Load user data
-        $resourceData = $resourceOwner->toArray();
-        if (!empty($config['nested_info'])) {
-            $resourceData = Arr::dot($resourceData);
-        }
-
-        $userdata = new Collection($resourceData);
         if (!$oauth) {
             // User authenticated but has no account
             return $this->redirectRegister(
