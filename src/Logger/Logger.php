@@ -44,7 +44,11 @@ class Logger extends AbstractLogger
             $message .= $this->formatException($context['exception']);
         }
 
-        $this->createEntry(['level' => $level, 'message' => $message]);
+        if (array_key_exists('user_id', $context)) {
+            $this->createEntry(['level' => $level, 'message' => $message, 'user_id' => $context['user_id']]);
+        } else {
+            $this->createEntry(['level' => $level, 'message' => $message]);
+        }
     }
 
     /**
