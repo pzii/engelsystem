@@ -87,6 +87,7 @@ function AngelType_edit_view(AngelType $angeltype, bool $supporter_mode)
 {
     $requires_ifsg = '';
     $requires_driving_license = '';
+    $requires_location_access = '';
     if (config('ifsg_enabled')) {
         $requires_ifsg = $supporter_mode ?
             form_info(
@@ -111,6 +112,19 @@ function AngelType_edit_view(AngelType $angeltype, bool $supporter_mode)
                 'requires_driver_license',
                 __('Requires driver license'),
                 $angeltype->requires_driver_license
+            );
+    }
+    if (config('location_access_enabled')) {
+        $requires_location_access = $supporter_mode ?
+            form_info(
+                __('angeltype.location_access.required'),
+                $angeltype->requires_location_access
+                    ? __('Yes')
+                    : __('No')
+            ) : form_checkbox(
+                'requires_location_access',
+                __('angeltype.location_access.required'),
+                $angeltype->requires_location_access
             );
     }
 
@@ -170,6 +184,7 @@ function AngelType_edit_view(AngelType $angeltype, bool $supporter_mode)
                             ),
                         $requires_driving_license,
                         $requires_ifsg,
+                        $requires_location_access,
                         $supporter_mode
                             ? form_info(__('Show on dashboard'), $angeltype->show_on_dashboard ? __('Yes') : __('No'))
                             : form_checkbox('show_on_dashboard', __('Show on dashboard'), $angeltype->show_on_dashboard),
@@ -805,6 +820,7 @@ function AngelTypes_list_view($angeltypes, bool $admin_angeltypes)
             table([
                 'name' => __('general.name'),
                 'is_restricted' => icon('mortarboard-fill') . __('angeltypes.restricted'),
+                'shift_requires_location_access' => icon('door-open-fill') . __('angeltypes.requires_location_access'),
                 'shift_self_signup_allowed' => icon('pencil-square') . __('shift.self_signup.allowed'),
                 'membership' => __('Membership'),
                 'actions' => '',

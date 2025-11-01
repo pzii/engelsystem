@@ -374,6 +374,10 @@ function shift_controller()
         $angeltype->shift_signup_state = $angeltype_signup_state;
     }
 
+    if (!$user->hasAccessTo($location->id)) {
+        $shift_signup_state->combineWith(new ShiftSignupState(ShiftSignupStatus::MISSING_LOCATION_ACCESS, 10));
+    }
+
     return [
         htmlspecialchars($shift->shiftType->name),
         Shift_view($shift, $shifttype, $location, $angeltypes, $shift_signup_state),
