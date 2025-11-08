@@ -40,14 +40,20 @@ function public_dashboard_controller()
         $filter->sessionImport($filterValues);
     }
 
+    $shift_overview = stats_get_shift_info(7 * 24);
     $stats = [
-        'needed-3-hours' => stats_angels_needed_three_hours($filter),
-        'needed-night'   => stats_angels_needed_for_nightshifts($filter),
-        'angels-working' => stats_currently_working($filter),
-        'hours-to-work'  => stats_hours_to_work($filter),
+        // 'needed-3-hours' => stats_angels_needed_for_next_hours(3, $filter),
+        'needed-2-weeks' => stats_angels_needed_for_next_hours(2 * 7 * 24, $filter),
+        'needed-4-weeks' => stats_angels_needed_for_next_hours(4 * 7 * 24, $filter),
+        'shifts-without-mentors' => $shift_overview['mentor_missing'],
+        'shifts-with-partial-mentors' => $shift_overview['mentor_partial'],
+        'shifts-with-full-mentors' => $shift_overview['mentor_full'],
+        // 'needed-night'   => stats_angels_needed_for_nightshifts($filter),
+        // 'angels-working' => stats_currently_working($filter),
+        // 'hours-to-work'  => stats_hours_to_work($filter),
     ];
 
-    $free_shifts_source = Shifts_free(time(), time() + 12 * 60 * 60, $filter);
+    $free_shifts_source = Shifts_free(time(), time() + 14 * 24 * 60 * 60, $filter);
     $free_shifts = [];
     foreach ($free_shifts_source as $shift) {
         $shift = Shift($shift);
@@ -82,6 +88,8 @@ function public_dashboard_controller_free_shift(Shift $shift, ?ShiftsFilter $fil
     $free_shift = [
         'id'             => $shift->id,
         'style'          => 'default',
+        'date'           => $shift->start->format('d M Y'),
+        'dow'            => $shift->start->format('D'),
         'start'          => $shift->start->format('H:i'),
         'end'            => $shift->end->format('H:i'),
         'duration'       => round(($shift->end->timestamp - $shift->start->timestamp) / 3600),
@@ -91,10 +99,10 @@ function public_dashboard_controller_free_shift(Shift $shift, ?ShiftsFilter $fil
         'needed_angels'  => public_dashboard_needed_angels($shift->neededAngels, $filter),
     ];
 
-    if (time() + 3 * 60 * 60 > $shift->start->timestamp) {
+    if (time() + 7 * 24 * 60 * 60 > $shift->start->timestamp) {
         $free_shift['style'] = 'warning';
     }
-    if (time() > $shift->start->timestamp) {
+    if (time() + 2 * 24 * 60 * 60 > $shift->start->timestamp) {
         $free_shift['style'] = 'danger';
     }
 
