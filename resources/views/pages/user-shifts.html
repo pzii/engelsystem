@@ -7,46 +7,12 @@
             <div class="row align-items-center">
                 <div class="col-12 col-xxl-auto row pe-xxl-0">
                     <div class="col-auto pe-xxl-0">%start_select%</div>
-                    <div class="col-auto">
-                        <div class="input-group time">
-                            <input
-                                type="time"
-                                class="form-control"
-                                id="start_time"
-                                name="start_time"
-                                size="5"
-                                pattern="^\d{1,2}:\d{2}$"
-                                placeholder="HH:MM"
-                                maxlength="5"
-                                value="%start_time%"
-                            >
-                            <button class="btn btn-secondary" title="Now" type="button">
-                                <span class="bi bi-arrow-counterclockwise"></span>
-                            </button>
-                        </div>
-                    </div>
+                    <div class="col-auto">%start_time_select%</div>
                 </div>
                 <div class="col-12 col-xxl-auto text-center px-2">&#8211;</div>
                 <div class="col-12 col-xxl-auto row px-xxl-0">
                     <div class="col-auto pe-xxl-0">%end_select%</div>
-                    <div class="col-auto">
-                        <div class="input-group time">
-                            <input
-                                type="time"
-                                class="form-control"
-                                id="end_time"
-                                name="end_time"
-                                size="5"
-                                pattern="^\d{1,2}:\d{2}$"
-                                placeholder="HH:MM"
-                                maxlength="5"
-                                value="%end_time%"
-                            >
-                            <button class="btn btn-secondary" title="Now" type="button">
-                                <span class="bi bi-arrow-counterclockwise"></span>
-                            </button>
-                        </div>
-                    </div>
+                    <div class="col-auto">%end_time_select%</div>
                 </div>
             </div>
             <div class="form-group d-print-none mt-2">
@@ -56,10 +22,7 @@
                     <button type="button" class="btn btn-secondary set-date" data-days="1">%set_tomorrow%</button>
                 </div>
                 <div class="btn-group mb-1" role="group">
-                    <button type="button" class="btn btn-secondary set-time" data-hours="-8">%set_last_8h%</button>
-                    <button type="button" class="btn btn-secondary set-time" data-hours="-4">%set_last_4h%</button>
-                    <button type="button" class="btn btn-secondary set-time" data-hours="4">%set_next_4h%</button>
-                    <button type="button" class="btn btn-secondary set-time" data-hours="8">%set_next_8h%</button>
+                    %hourly_quickfilter%
                 </div>
                 <div class="btn-group mb-1" role="group">%random%</div>
                 <div class="btn-group mb-1" role="group">%dashboard%</div>
