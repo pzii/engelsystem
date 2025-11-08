@@ -447,6 +447,10 @@ return [
     // 0 means no limit
     'filter_max_duration'     => env('FILTER_MAX_DURATION', 0),
 
+    // Setting this to true will remove the time inputs from the shift overview, making the filtering
+    // mechanism date-based (i.e., always showing whole days)
+    'enable_date_only_shift_filtering' => env('ENABLE_DATE_ONLY_SHIFT_FILTERING', false),
+
     // Session config
     'session'                 => [
         // Supported: pdo or native
