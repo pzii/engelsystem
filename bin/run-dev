@@ -1,0 +1,5 @@
+#! /bin/bash
+
+cd ./docker/dev
+
+systemd-run --scope --user podman compose --profile dev up -d

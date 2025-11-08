@@ -1,0 +1,9 @@
+#! /bin/bash
+
+set -euo pipefail
+
+git merge feature/keep-user-data-in-sso-sync
+git merge feature/location-access
+git merge feature/compactify-user-shift-calender
+
+git merge zam/unsorted-hacks
