@@ -1,0 +1,35 @@
+#! /bin/bash
+
+set -euo pipefail
+
+GIT_CID=$(git log --pretty=format:'%h' -n 1)
+DEPLOY_DIR=/tmp/engelsystem-${GIT_CID}
+
+systemd-run --scope --user podman exec engelsystem_dev_es_workspace_1 composer i
+systemd-run --scope --user podman exec engelsystem_dev_es_workspace_1 yarn install
+systemd-run --scope --user podman exec engelsystem_dev_es_workspace_1 yarn build
+# systemd-run --scope --user podman exec engelsystem_dev_es_workspace_1 find /var/www/resources/lang -type f -name '*.po' -exec sh -c 'msgfmt "${1%.*}.po" -o"${1%.*}.mo"' shell {} \;
+systemd-run --scope --user podman exec engelsystem_dev_es_workspace_1 find /var/www/resources/lang -type f -name '*.po' -exec sh -c 'msgfmt "$1" -o"$(echo $1 | cut -d. -f1).mo"' shell {} \;
+
+mkdir -p ${DEPLOY_DIR}
+
+rsync -vAax \
+	--exclude '.git*' \
+	--exclude .composer/ \
+	--exclude coverage/ \
+	--exclude docker/dev/ \
+	--exclude node_modules/ \
+	--exclude release/ \
+	--exclude tests/ \
+	--exclude CONTRIBUTING.md \
+	--exclude deployment.tpl.yaml \
+	--exclude DEVELOPMENT.md \
+	--exclude SECURITY.md \
+	--exclude phpstan.neon.dist \
+	--exclude phpunit.xml \
+	./ ${DEPLOY_DIR}
+
+echo Building tar: "tar -cjf $(date +"%Y-%m-%d-deployment-${GIT_CID}.tar.bz2") ${DEPLOY_DIR}"
+tar -cjf $(date +"%Y-%m-%d-deployment-${GIT_CID}.tar.bz2") ${DEPLOY_DIR}
+
+rm -rf "${DEPLOY_DIR}"
