@@ -455,6 +455,9 @@ return [
     // allow filtering for yesterday's shifts. When set to null, no filtering is applied.
     'limit_to_past_days_in_shift_filter' => env('LIMIT_TO_PAST_DAYS_IN_SHIFT_FILTER', null),
 
+    // Hides the "random shift" button in the shift fiter if set to true
+    'hide_random_in_shift_filter' => env('HIDE_RANDOM_IN_SHIFT_FILTER', false),
+
     // Session config
     'session'                 => [
         // Supported: pdo or native
