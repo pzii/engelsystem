@@ -172,14 +172,16 @@ function load_locations(bool $onlyWithActiveShifts = false)
 /**
  * @return array
  */
-function load_days()
+function load_days($limit_past_days = null)
 {
     $days = (new Collection(Db::select(
         '
                 SELECT DISTINCT DATE(`start`) AS `id`, DATE(`start`) AS `name`
-                FROM `shifts`
-                ORDER BY `id`, `name`
-            '
+                FROM `shifts` '
+                . ($limit_past_days != null ? 'WHERE DATE(`start`) >= CURRENT_DATE() - ? ' : '' ) .
+                'ORDER BY `id`, `name`
+            ',
+        [$limit_past_days]
     )))
         ->pluck('id')
         ->toArray();
@@ -265,7 +267,7 @@ function view_user_shifts()
     $user = auth()->user();
 
     $session = session();
-    $days = load_days();
+    $days = load_days(config('limit_to_past_days_in_shift_filter', null));
     $locations = load_locations(true);
     $types = load_types();
 
