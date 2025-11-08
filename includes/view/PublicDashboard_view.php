@@ -29,10 +29,21 @@ function public_dashboard_view($stats, $free_shifts, $highlighted_news)
         $shift_panels = [
             '<div class="row">',
         ];
-        foreach ($free_shifts as $i => $shift) {
+        $prev_date = '';
+        $cols = 0;
+        foreach ($free_shifts as $shift) {
+            if ($prev_date != $shift['date']) {
+                $prev_date = $shift['date'];
+                $shift_panels[] = '</div><div class="row" style="margin-top: 10px"><h3>' . $shift['dow'] . ', ' . $shift['date'] . '</h3></div><div class="row">';
+                $cols = 0;
+            }
+
             $shift_panels[] = public_dashboard_shift_render($shift);
-            if ($i % 4 == 3) {
+            if ($cols % 4 == 3) {
                 $shift_panels[] = '</div><div class="row">';
+                $cols = 0;
+            } else {
+                $cols++;
             }
         }
         $shift_panels[] = '</div>';
@@ -47,10 +58,14 @@ function public_dashboard_view($stats, $free_shifts, $highlighted_news)
     }
 
     $stats =  [
-        stats(__('Angels needed in the next 3 hrs'), $stats['needed-3-hours']),
-        stats(__('Angels needed for nightshifts'), $stats['needed-night']),
-        stats(__('Angels currently working'), $stats['angels-working'], 'default'),
-        stats(__('Hours to be worked'), $stats['hours-to-work'], 'default'),
+        // stats(__('Angels needed in the next 2 weeks'), $stats['needed-2-weeks']),
+        // stats(__('Angels needed in the next 4 weeks'), $stats['needed-4-weeks']),
+        // stats(__('Angels needed for nightshifts'), $stats['needed-night']),
+        // stats(__('Angels currently working'), $stats['angels-working'], 'default'),
+        stats(__('pubdash.stats.shifts.nomentor'), $stats['shifts-without-mentors']),
+        stats(__('pubdash.stats.shifts.partialmentor'), $stats['shifts-with-partial-mentors'], $stats['shifts-with-partial-mentors'] == 0 ? 'success' : 'warning'),
+        stats(__('pubdash.stats.shifts.fullmentor'), $stats['shifts-with-full-mentors'], $stats['shifts-with-full-mentors'] == 0 ? 'info' : 'success'),
+        // stats(__('Hours to be worked'), $stats['hours-to-work'], 'default'),
     ];
 
     $dayOfEvent = DayOfEvent::get();
@@ -92,20 +107,28 @@ function public_dashboard_view($stats, $free_shifts, $highlighted_news)
  */
 function public_dashboard_shift_render($shift)
 {
-    $panel_body = icon('clock-history') . $shift['start'] . ' - ' . $shift['end'];
+    $panel_body = icon('clock-history') . $shift['date'] . ', ' . $shift['start'] . ' - ' . $shift['end'];
     $panel_body .= ' (' . $shift['duration'] . '&nbsp;h)';
 
     $panel_body .= '<br>' . icon('list-task') . htmlspecialchars($shift['shifttype_name']);
-    if (!empty($shift['title'])) {
-        $panel_body .= ' (' . htmlspecialchars($shift['title']) . ')';
-    }
+    //if (!empty($shift['title'])) {
+    //    $panel_body .= ' (' . htmlspecialchars($shift['title']) . ')';
+    //}
 
-    $panel_body .= '<br>' . icon('pin-map-fill') . htmlspecialchars($shift['location_name']);
+    // $panel_body .= '<br>' . icon('pin-map-fill') . htmlspecialchars($shift['location_name']);
 
     foreach ($shift['needed_angels'] as $needed_angels) {
+        $short_shift_name = $needed_angels['angeltype_name'];
+        if (str_starts_with($short_shift_name, 'Betreuung ')) {
+            $short_shift_name = 'Betreuung';
+        }
+        if (str_starts_with($short_shift_name, 'Unterstützung ')) {
+            $short_shift_name = 'Unterstützung';
+        }
+
         $panel_body .= '<br>' . icon('person')
             . '<span class="text-' . $shift['style'] . '">'
-            . $needed_angels['need'] . ' &times; ' . htmlspecialchars($needed_angels['angeltype_name'])
+            . $needed_angels['need'] . ' &times; ' . htmlspecialchars($short_shift_name)
             . '</span>';
     }
 
