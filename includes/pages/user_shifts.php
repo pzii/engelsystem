@@ -408,7 +408,7 @@ function view_user_shifts()
                     <button type="button" class="btn btn-secondary set-time" data-hours="-4">' . __('last 4h') . '</button>
                     <button type="button" class="btn btn-secondary set-time" data-hours="4">' . __('next 4h') . '</button>
                     <button type="button" class="btn btn-secondary set-time" data-hours="8">' . __('next 8h') . '</button>',
-                'random'        => auth()->can('user_shifts') && $canSignUpForShifts ? button(
+                'random'        => auth()->can('user_shifts') && $canSignUpForShifts && !config('hide_random_in_shift_filter') ? button(
                     url('/shifts/random'),
                     icon('shuffle') . __('shifts.random'),
                     'btn-primary'
