@@ -59,6 +59,7 @@ function update_ShiftsFilter_timerange(ShiftsFilter $shiftsFilter, $days)
     if (is_null($start_time)) {
         $now = new DateTime();
         $today = $now->format('Y-m-d');
+
         if (in_array($today, $days)) {
             // Today has shifts, use current time
             $start_time = $now->getTimestamp();
@@ -86,6 +87,17 @@ function update_ShiftsFilter_timerange(ShiftsFilter $shiftsFilter, $days)
             $end->startOfDay()->subSecond(); // the day before
             $end_time = $end->timestamp;
         }
+    }
+
+    // In case we're only filtering by date, we want to get rid of any time value
+    if (config('enable_date_only_shift_filtering')) {
+        $start = Carbon::createFromTimestamp($start_time, Carbon::now()->timezone);
+        $start->setTime(0, 0, 0, 0);
+        $start_time = $start->timestamp;
+
+        $end = Carbon::createFromTimestamp($end_time, Carbon::now()->timezone);
+        $end->setTime(23, 59, 59, 999999);
+        $end_time = $end->timestamp;
     }
 
     $shiftsFilter->setStartTime(check_request_datetime(
@@ -352,14 +364,14 @@ function view_user_shifts()
                     array_combine($days, $formattedDays),
                     $start_day
                 ),
-                'start_time'    => $start_time,
+                'start_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('start_time', 'start_time', $start_time),
                 'end_select'    => html_select_key(
                     'end_day',
                     'end_day',
                     array_combine($days, $formattedDays),
                     $end_day
                 ),
-                'end_time'      => $end_time,
+                'end_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('end_time', 'end_time', $end_time),
                 'type_select'   => make_select(
                     $types,
                     $shiftsFilter->getTypes(),
@@ -389,10 +401,11 @@ function view_user_shifts()
                 'set_yesterday' => __('Yesterday'),
                 'set_today'     => __('Today'),
                 'set_tomorrow'  => __('Tomorrow'),
-                'set_last_8h'   => __('last 8h'),
-                'set_last_4h'   => __('last 4h'),
-                'set_next_4h'   => __('next 4h'),
-                'set_next_8h'   => __('next 8h'),
+                'hourly_quickfilter' => config('enable_date_only_shift_filtering') ? '' :
+                    '<button type="button" class="btn btn-secondary set-time" data-hours="-8">' . __('last 8h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="-4">' . __('last 4h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="4">' . __('next 4h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="8">' . __('next 8h') . '</button>',
                 'random'        => auth()->can('user_shifts') && $canSignUpForShifts ? button(
                     url('/shifts/random'),
                     icon('shuffle') . __('shifts.random'),
