@@ -8,6 +8,7 @@ use Engelsystem\Models\Shifts\Shift;
 use Engelsystem\Models\Shifts\ShiftEntry;
 use Engelsystem\Models\Shifts\ShiftSignupStatus;
 use Engelsystem\Models\User\User;
+use Engelsystem\ShiftSignupState;
 use Illuminate\Support\Collection;
 
 use function theme_type;
@@ -193,8 +194,17 @@ class ShiftCalendarShiftRenderer
             $angeltype,
             $shift_entries
         );
+
         $freeEntriesCount = $shift_signup_state->getFreeEntries();
-        $inner_text = _e('%d helper needed', '%d helpers needed', $freeEntriesCount, [$freeEntriesCount]);
+
+        if (str_starts_with($angeltype->name, 'Betreuung ')) {
+                $inner_text = _e(__('shift.mentor.needed'), __('shift.mentors.needed'), $freeEntriesCount, [$freeEntriesCount]);
+        } elseif (str_starts_with($angeltype->name, 'Unterstützung ')) {
+                $inner_text = __('shift.wanttohelp');
+                $shift_can_signup = new ShiftSignupState(ShiftSignupStatus::OCCUPIED, $shift_can_signup->getFreeEntries());
+        } else {
+                $inner_text = _e('%d helper needed', '%d helpers needed', $freeEntriesCount, [$freeEntriesCount]);
+        }
 
         $entry = match ($shift_signup_state->getState()) {
             // When admin or free display a link + button for sign up
