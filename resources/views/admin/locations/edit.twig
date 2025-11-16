@@ -33,6 +33,14 @@
                     'rows': 5,
                     'info': __('form.markdown')
                 }) }}
+
+                {{ f.select('access_group', __('location.access_group'), access_groups, {
+                    'type': 'string',
+                    'selected': f.formData('access_group', location ? location.access_group : ''),
+                    'value': f.formData('access_group', location ? location.access_group : ''),
+                    'info': __('location.access_group.info'),
+                    'max_length': 300,
+                }) }}
             </div>
 
             <div class="col-lg-6">
