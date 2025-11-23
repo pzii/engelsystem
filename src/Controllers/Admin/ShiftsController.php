@@ -79,4 +79,37 @@ class ShiftsController extends BaseController
 
         return $this->redirect->back();
     }
+
+    public function toggleCancelled(Request $request): Response
+    {
+        $shiftId = $request->getAttribute('shift_id');
+        $shift = Shift::findOrFail($shiftId);
+
+        if ($shift->isCancelled()) {
+            $shift->enable();
+        } else {
+            $cancelReason = $request->postData('cancel_reason', '');
+            $shift->cancel($cancelReason);
+        }
+
+        $shift->updatedBy()->associate(auth()->user());
+        $shift->save();
+
+        $this->log->info(
+            'Shift {action}: {title} / {type} from {start} to {end}'
+            . ($shift->isCancelled() && $shift->cancel_reason ? ' reason: {reason}' : ''),
+            [
+                'action' => $shift->isCancelled() ? 'cancelled' : 'enabled',
+                'title' => $shift->title,
+                'type' => $shift->shiftType->name,
+                'start' => $shift->start->format('Y-m-d H:i'),
+                'end' => $shift->end->format('Y-m-d H:i'),
+                'reason' => $shift->cancel_reason,
+            ]
+        );
+
+        $this->addNotification($shift->isCancelled() ? 'shifts.cancelled.success' : 'shifts.enabled.success');
+
+        return $this->redirect->back();
+    }
 }
