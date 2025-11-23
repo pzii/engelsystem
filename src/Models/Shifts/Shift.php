@@ -31,6 +31,7 @@ use Illuminate\Database\Query\JoinClause;
  * @property int                               $shift_type_id
  * @property int                               $location_id
  * @property string|null                       $transaction_id
+ * @property bool                              $cancelled
  * @property int                               $created_by
  * @property int|null                          $updated_by
  * @property Carbon|null                       $created_at
@@ -69,6 +70,7 @@ class Shift extends BaseModel
         'description'    => '',
         'url'            => '',
         'transaction_id' => null,
+        'cancelled'      => false,
         'updated_by'     => null,
     ];
 
@@ -81,6 +83,7 @@ class Shift extends BaseModel
         'location_id'   => 'integer',
         'created_by'    => 'integer',
         'updated_by'    => 'integer',
+        'cancelled'     => 'boolean',
         'start'         => 'datetime',
         'end'           => 'datetime',
     ];
@@ -95,6 +98,7 @@ class Shift extends BaseModel
         'shift_type_id',
         'location_id',
         'transaction_id',
+        'cancelled',
         'created_by',
         'updated_by',
     ];
@@ -260,5 +264,47 @@ class Shift extends BaseModel
         }
 
         return config('night_shifts')['multiplier'];
+    }
+
+    /**
+     * Check if the shift is cancelled
+     */
+    public function isCancelled(): bool
+    {
+        return $this->cancelled;
+    }
+
+    /**
+     * Cancel the shift
+     */
+    public function cancel(): self
+    {
+        $this->cancelled = true;
+        return $this;
+    }
+
+    /**
+     * Enable the shift
+     */
+    public function enable(): self
+    {
+        $this->cancelled = false;
+        return $this;
+    }
+
+    /**
+     * Scope to filter only enabled shifts
+     */
+    public function scopeEnabled(Builder $query): void
+    {
+        $query->where('cancelled', false);
+    }
+
+    /**
+     * Scope to filter only cancelled shifts
+     */
+    public function scopeCancelled(Builder $query): void
+    {
+        $query->where('cancelled', true);
     }
 }

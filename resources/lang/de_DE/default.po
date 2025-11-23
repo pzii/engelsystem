@@ -2059,6 +2059,24 @@ msgstr "Start"
 msgid "shifts.end"
 msgstr "Ende"
 
+msgid "shifts.cancelled"
+msgstr "Abgesagt"
+
+msgid "shifts.cancel"
+msgstr "Schicht absagen"
+
+msgid "shifts.enable"
+msgstr "Schicht aktivieren"
+
+msgid "shifts.cancelled.info"
+msgstr "Diese Schicht wurde abgesagt. Du kannst dich nicht für abgesagte Schichten eintragen."
+
+msgid "shifts.cancelled.success"
+msgstr "Schicht erfolgreich abgesagt."
+
+msgid "shifts.enabled.success"
+msgstr "Schicht erfolgreich aktiviert."
+
 msgid "user.info"
 msgstr "Benutzer Info"
 
