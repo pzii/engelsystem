@@ -31,6 +31,7 @@ use Illuminate\Database\Query\JoinClause;
  * @property int                               $shift_type_id
  * @property int                               $location_id
  * @property string|null                       $transaction_id
+ * @property string|null                       $cancel_reason
  * @property int                               $created_by
  * @property int|null                          $updated_by
  * @property Carbon|null                       $created_at
@@ -69,6 +70,7 @@ class Shift extends BaseModel
         'description'    => '',
         'url'            => '',
         'transaction_id' => null,
+        'cancel_reason'  => null,
         'updated_by'     => null,
     ];
 
@@ -95,6 +97,7 @@ class Shift extends BaseModel
         'shift_type_id',
         'location_id',
         'transaction_id',
+        'cancel_reason',
         'created_by',
         'updated_by',
     ];
@@ -260,5 +263,47 @@ class Shift extends BaseModel
         }
 
         return config('night_shifts')['multiplier'];
+    }
+
+    /**
+     * Check if the shift is cancelled
+     */
+    public function isCancelled(): bool
+    {
+        return $this->cancel_reason !== null;
+    }
+
+    /**
+     * Cancel the shift
+     */
+    public function cancel(string $reason = ''): self
+    {
+        $this->cancel_reason = $reason;
+        return $this;
+    }
+
+    /**
+     * Enable the shift
+     */
+    public function enable(): self
+    {
+        $this->cancel_reason = null;
+        return $this;
+    }
+
+    /**
+     * Scope to filter only enabled shifts
+     */
+    public function scopeEnabled(Builder $query): void
+    {
+        $query->whereNull('cancel_reason');
+    }
+
+    /**
+     * Scope to filter only cancelled shifts
+     */
+    public function scopeCancelled(Builder $query): void
+    {
+        $query->whereNotNull('cancel_reason');
     }
 }

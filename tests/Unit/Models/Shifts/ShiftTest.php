@@ -35,6 +35,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversMethod(Shift::class, 'isNightShift')]
 #[CoversMethod(Shift::class, 'getNightShiftMultiplier')]
 #[CoversMethod(Shift::class, 'tags')]
+#[CoversMethod(Shift::class, 'isCancelled')]
+#[CoversMethod(Shift::class, 'cancel')]
+#[CoversMethod(Shift::class, 'enable')]
+#[CoversMethod(Shift::class, 'scopeEnabled')]
+#[CoversMethod(Shift::class, 'scopeCancelled')]
 class ShiftTest extends ModelTestCase
 {
     public function testShiftType(): void
@@ -332,6 +337,46 @@ class ShiftTest extends ModelTestCase
 
         $config->set('night_shifts', array_merge($config->get('night_shifts'), ['enabled' => false]));
         $this->assertEquals(1, $shift->getNightShiftMultiplier());
+    }
+
+    public function testCancelAndEnable(): void
+    {
+        $shift = new Shift();
+
+        $this->assertFalse($shift->isCancelled());
+        $this->assertNull($shift->cancel_reason);
+
+        $shift->cancel('Venue flooded');
+        $this->assertTrue($shift->isCancelled());
+        $this->assertEquals('Venue flooded', $shift->cancel_reason);
+
+        $shift->enable();
+        $this->assertFalse($shift->isCancelled());
+        $this->assertNull($shift->cancel_reason);
+
+        // Cancel without reason
+        $shift->cancel();
+        $this->assertTrue($shift->isCancelled());
+        $this->assertEquals('', $shift->cancel_reason);
+    }
+
+    public function testCancelledScopes(): void
+    {
+        $enabledShift = Shift::factory()->create(['cancel_reason' => null]);
+        $cancelledShift = Shift::factory()->create(['cancel_reason' => 'Test reason']);
+
+        $enabled = Shift::scopes('enabled')->get();
+        $cancelled = Shift::scopes('cancelled')->get();
+
+        $this->assertTrue($enabled->contains('id', $enabledShift->id));
+        $this->assertFalse($enabled->contains('id', $cancelledShift->id));
+
+        $this->assertFalse($cancelled->contains('id', $enabledShift->id));
+        $this->assertTrue($cancelled->contains('id', $cancelledShift->id));
+
+        // Verify cancel_reason is persisted
+        $reloaded = Shift::find($cancelledShift->id);
+        $this->assertEquals('Test reason', $reloaded->cancel_reason);
     }
 
     public function testTags(): void
