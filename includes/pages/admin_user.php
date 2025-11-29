@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Engelsystem\Config\GoodieType;
 use Engelsystem\Http\Validation\Rules\Username;
 use Engelsystem\Models\Group;
+use Engelsystem\Models\Location;
 use Engelsystem\Models\User\User;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
@@ -233,6 +234,26 @@ function admin_user()
 
             $html .= '<hr>';
         }
+
+        // List OAuth groups and resulting location accesses
+        foreach ($user_source->oauth ?? [] as $oauth) {
+            $html .= '<h5>' . __('user.oauth.groups', [htmlspecialchars($oauth->provider)]) . '</h5>';
+            $html .= '<ul>';
+            $oauth_groups = $oauth->oauth_groups ?? [];
+            asort($oauth_groups);
+            foreach (array_unique($oauth_groups) as $group) {
+                $locations = Location::whereAccessGroup($group)->get();
+                if ($locations->isEmpty()) {
+                    $html .= '<li>' . htmlspecialchars($group) . '</li>';
+                } else {
+                    $locationStr = implode(', ', array_map(fn($location) => htmlspecialchars($location->name), $locations->all()));
+                    $html .= '<li><b>' . htmlspecialchars($group) . '</b> ' . icon('arrow-right') . ' ' . $locationStr . '</li>';
+                }
+            }
+            $html .= '</ul>';
+        }
+
+        $html .= '<hr>';
 
         $html .= buttons([
             button(user_delete_link($user_source->id), icon('trash') . __('form.delete'), 'btn-danger'),

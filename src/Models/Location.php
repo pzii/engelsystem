@@ -32,6 +32,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @method static QueryBuilder|Location[] whereName($value)
  * @method static QueryBuilder|Location[] whereMapUrl($value)
  * @method static QueryBuilder|Location[] whereDect($value)
+ * @method static QueryBuilder|Location[] whereAccessGroup($value)
  * @method static QueryBuilder|Location[] whereDescription($value)
  * @method static QueryBuilder|Location[] whereCreatedAt($value)
  * @method static QueryBuilder|Location[] whereUpdatedAt($value)

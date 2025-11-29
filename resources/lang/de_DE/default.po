@@ -2168,3 +2168,6 @@ msgstr "Konfiguration wird aus ENV variable überschrieben!"
 
 msgid "config.warning_file_not_writable"
 msgstr "Konfigurationsdatei config.local.php ist nicht beschreibbar!"
+
+msgid "user.oauth.groups"
+msgstr "Gruppen vom OAuth-Anbieter %s:"
