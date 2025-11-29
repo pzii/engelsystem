@@ -1174,3 +1174,6 @@ msgstr "Configuration option is overwritten from ENV!"
 
 msgid "config.warning_file_not_writable"
 msgstr "Configuration file config.local.php not writable!"
+
+msgid "user.oauth.groups"
+msgstr "Groups from OAuth provider %s:"
