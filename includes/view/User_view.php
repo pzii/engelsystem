@@ -963,6 +963,22 @@ function User_oauth_render(User $user)
                     : Str::ucfirst($oauth->provider)
             )
         );
+
+        $groups = $oauth->oauth_groups ?? [];
+        $groups_to_show = $config[$oauth->provider]['groups_to_show'] ?? [];
+        asort($groups_to_show);
+
+        $groups_str = '<p style="font-size: small;">';
+        foreach ($groups_to_show as $group => $display_name) {
+            if (in_array($group, $groups)) {
+                $groups_str .= '<span class="text-success">' . icon('check-lg') . htmlspecialchars($display_name) . '</span><br/>';
+            } else {
+                $groups_str .= '<span class="text-danger">' . icon('x-lg') . htmlspecialchars($display_name) . '</span><br/>';
+            }
+        }
+        $groups_str .= '</p>';
+
+        $output[] = $groups_str;
     }
 
     if (!$output) {
