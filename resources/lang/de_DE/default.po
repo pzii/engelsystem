@@ -2247,3 +2247,6 @@ msgstr "Plugin aktivieren"
 
 msgid "plugin.disable"
 msgstr "Plugin deaktivieren"
+
+msgid "user.oauth.groups"
+msgstr "Gruppen vom OAuth-Anbieter %s:"
