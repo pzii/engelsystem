@@ -2147,3 +2147,6 @@ msgstr "Konfiguration"
 
 msgid "config.edit.success"
 msgstr "Konfiguration erfolgreich angepasst"
+
+msgid "user.oauth.groups"
+msgstr "Gruppen vom OAuth-Anbieter %s:"

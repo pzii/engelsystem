@@ -145,6 +145,9 @@ return [
             // Auto join teams
             // Info groups field (optional)
             'groups' => 'groups',
+            // Whitelist of groups to show on user page (optional)
+            // Map of OAuth group name to friendly display name
+            'groups_to_show' => null,
             // Groups to team (angel type) mapping (optional)
             'teams' => [
                 '/Lorem' => 4, // 4 being the ID of the team (angel type)
