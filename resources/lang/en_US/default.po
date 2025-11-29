@@ -736,6 +736,9 @@ msgstr "Arrived"
 msgid "user.arrive"
 msgstr "Arrive"
 
+msgid "user.oauth.groups"
+msgstr "Groups from OAuth provider %s:"
+
 msgid "user.got_goodie"
 msgstr "Got goodie"
 

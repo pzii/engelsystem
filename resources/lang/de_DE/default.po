@@ -1922,6 +1922,9 @@ msgstr "Angekommen"
 msgid "user.arrive"
 msgstr "Ankommen"
 
+msgid "user.oauth.groups"
+msgstr "Gruppen vom OAuth-Anbieter %s:"
+
 msgid "user.got_goodie"
 msgstr "Goodie bekommen"
 
