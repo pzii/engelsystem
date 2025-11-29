@@ -1336,3 +1336,6 @@ msgstr "Enable plugin"
 
 msgid "plugin.disable"
 msgstr "Disable plugin"
+
+msgid "user.oauth.groups"
+msgstr "Groups from OAuth provider %s:"
