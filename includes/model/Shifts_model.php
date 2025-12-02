@@ -222,6 +222,7 @@ function NeededAngeltypes_by_ShiftsFilter(ShiftsFilter $shiftsFilter)
             `shifts`.`id` AS shift_id,
             `angel_types`.`id`,
             `angel_types`.`name`,
+            `angel_types`.`short_name`,
             `angel_types`.`restricted`,
             `angel_types`.`shift_self_signup`
         FROM `shifts`
@@ -240,6 +241,7 @@ function NeededAngeltypes_by_ShiftsFilter(ShiftsFilter $shiftsFilter)
             `shifts`.`id` AS shift_id,
             `angel_types`.`id`,
             `angel_types`.`name`,
+            `angel_types`.`short_name`,
             `angel_types`.`restricted`,
             `angel_types`.`shift_self_signup`
         FROM `shifts`
@@ -260,6 +262,7 @@ function NeededAngeltypes_by_ShiftsFilter(ShiftsFilter $shiftsFilter)
             `shifts`.`id` AS shift_id,
             `angel_types`.`id`,
             `angel_types`.`name`,
+            `angel_types`.`short_name`,
             `angel_types`.`restricted`,
             `angel_types`.`shift_self_signup`
         FROM `shifts`

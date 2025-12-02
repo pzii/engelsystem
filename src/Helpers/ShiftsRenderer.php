@@ -43,6 +43,7 @@ class ShiftsRenderer
                 $data = $nAngelType->toArray();
                 $data['id'] = $nAngelType->angelType->id;
                 $data['name'] = $nAngelType->angelType->name;
+                $data['short_name'] = $nAngelType->angelType->short_name;
                 $data['restricted'] = $nAngelType->angelType->restricted;
                 $data['shift_self_signup'] = $nAngelType->angelType->shift_self_signup;
                 $neededAngelTypes[$shift->id][] = $data;

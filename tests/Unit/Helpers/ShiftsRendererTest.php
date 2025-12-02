@@ -28,7 +28,7 @@ class ShiftsRendererTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
         /** @var AngelType $angelType */
-        $angelType = AngelType::factory()->create();
+        $angelType = AngelType::factory()->create(['short_name' => 'Test']);
         /** @var Schedule $scheduleLocation */
         $scheduleLocation = Schedule::factory()->create(['needed_from_shift_type' => false]);
         /** @var Schedule $scheduleType */
@@ -70,6 +70,7 @@ class ShiftsRendererTest extends TestCase
                 $angelType = $neededAngelTypes[1][0];
                 $this->assertNotEmpty($angelType);
                 $this->assertArrayHasKey('name', $angelType);
+                $this->assertSame('Test', $angelType['short_name']);
                 $this->assertArrayHasKey('restricted', $angelType);
                 $this->assertArrayHasKey('shift_self_signup', $angelType);
 

@@ -855,6 +855,12 @@ msgid "angeltype.hide_on_shift_view.info"
 msgstr "If checked, only admins and members of the angel type "
 "can see the filter option for this angel type on the shifts page."
 
+msgid "angeltype.short_name"
+msgstr "Short name"
+
+msgid "angeltype.short_name.info"
+msgstr "Optional abbreviated name for compact views such as shift schedules."
+
 msgid "angeltype.qr"
 msgstr "Join angel type \"%s\" QR code"
 

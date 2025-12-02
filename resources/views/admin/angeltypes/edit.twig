@@ -18,6 +18,12 @@
                     'max_length': 255,
                     'disabled': isSupporter,
                 }) }}
+                {{ f.input('short_name', __('angeltype.short_name'), {
+                    'value': f.formData('short_name', angelType ? angelType.short_name : ''),
+                    'max_length': 50,
+                    'info': __('angeltype.short_name.info'),
+                    'disabled': isSupporter,
+                }) }}
 
                 {{ f.textarea('description', __('general.description'), {
                     'value': f.formData('description', angelType ? angelType.description : ''),

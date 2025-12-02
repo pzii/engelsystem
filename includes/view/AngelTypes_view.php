@@ -18,16 +18,19 @@ use Engelsystem\ShiftsFilterRenderer;
  *
  * @param AngelType $angeltype
  * @param bool $plain
+ * @param bool $useShortName Whether to use short name if available
  * @return string
  */
-function AngelType_name_render(AngelType $angeltype, $plain = false)
+function AngelType_name_render(AngelType $angeltype, $plain = false, $useShortName = false)
 {
+    $name = $useShortName && $angeltype->short_name ? $angeltype->short_name : $angeltype->name;
+
     if ($plain) {
-        return sprintf('%s (%u)', $angeltype->name, $angeltype->id);
+        return sprintf('%s (%u)', $name, $angeltype->id);
     }
 
     return '<a href="' . angeltype_link($angeltype->id) . '">'
-        . ($angeltype->restricted ? icon('mortarboard-fill') : '') . htmlspecialchars($angeltype->name)
+        . ($angeltype->restricted ? icon('mortarboard-fill') : '') . htmlspecialchars($name)
         . '</a>';
 }
 

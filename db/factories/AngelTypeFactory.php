@@ -14,8 +14,10 @@ class AngelTypeFactory extends Factory
 
     public function definition(): array
     {
+        $name = $this->faker->unique()->firstName();
         return [
-            'name'        => $this->faker->unique()->firstName(),
+            'name'        => $name,
+            'short_name'  => strtoupper(substr($name, 0, 3)),
             'description' => $this->faker->text(),
 
             'contact_name'  => $this->faker->firstName(),

@@ -89,6 +89,7 @@ class AngelTypesController extends BaseController
             $request,
             [
                 'name' => ($this->auth->can('angeltypes.edit') ? 'required' : 'optional') . '|max:255',
+                'short_name' => 'optional|max:50',
                 'description' => 'optional',
                 'contact_name' => 'optional|max:255',
                 'contact_dect' => 'optional|max:255',
@@ -108,6 +109,7 @@ class AngelTypesController extends BaseController
                 throw new ValidationException((new Validator())->addErrors(['name' => ['validation.name.exists']]));
             }
             $angelType->name = $data['name'];
+            $angelType->short_name = $data['short_name'];
             $angelType->restricted = (bool) $data['restricted'];
             $angelType->shift_self_signup = (bool) $data['shift_self_signup'];
             $angelType->show_on_dashboard = (bool) $data['show_on_dashboard'];
