@@ -17,6 +17,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 /**
  * @property int                               $id
  * @property string                            $name
+ * @property string|null                       $short_name
  * @property string                            $description
  * @property string                            $contact_name
  * @property string                            $contact_dect
@@ -36,6 +37,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @method static QueryBuilder|AngelType[] whereId($value)
  * @method static QueryBuilder|AngelType[] whereName($value)
+ * @method static QueryBuilder|AngelType[] whereShortName($value)
  * @method static QueryBuilder|AngelType[] whereDescription($value)
  * @method static QueryBuilder|AngelType[] whereContactName($value)
  * @method static QueryBuilder|AngelType[] whereContactDect($value)
@@ -53,6 +55,7 @@ class AngelType extends BaseModel
 
     /** @var array Default attributes */
     protected $attributes = [ // phpcs:ignore
+        'short_name'                => null,
         'description'               => '',
         'contact_name'              => '',
         'contact_dect'              => '',
@@ -73,6 +76,7 @@ class AngelType extends BaseModel
      */
     protected $fillable = [ // phpcs:ignore
         'name',
+        'short_name',
         'description',
 
         'contact_name',
