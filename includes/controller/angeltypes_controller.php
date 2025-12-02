@@ -38,6 +38,126 @@ function angeltype_link($angeltype_id, $params = [])
 }
 
 /**
+ * Delete an Angeltype.
+ *
+ * @return array
+ */
+function angeltype_delete_controller()
+{
+    if (!auth()->can('angeltypes.edit')) {
+        throw_redirect(url('/angeltypes'));
+    }
+
+    $angeltype = AngelType::findOrFail(request()->input('angeltype_id'));
+
+    if (request()->hasPostData('delete')) {
+        $angeltype->delete();
+        engelsystem_log('Deleted angel type: ' . AngelType_name_render($angeltype, true));
+        success(sprintf(__('Angel type %s deleted.'), $angeltype->name));
+        throw_redirect(url('/angeltypes'));
+    }
+
+    return [
+        sprintf(__('Delete angel type %s'), htmlspecialchars($angeltype->name)),
+        AngelType_delete_view($angeltype),
+    ];
+}
+
+/**
+ * Change an Angeltype.
+ *
+ * @return array
+ */
+function angeltype_edit_controller()
+{
+    // In supporter mode only allow to modify description
+    $supporter_mode = !auth()->can('angeltypes.edit');
+    $request = request();
+
+    if ($request->has('angeltype_id')) {
+        // Edit existing angeltype
+        $angeltype = AngelType::findOrFail($request->input('angeltype_id'));
+
+        if (!auth()->user()?->isAngelTypeSupporter($angeltype) && !auth()->can('user.angeltypes.edit')) {
+            throw_redirect(url('/angeltypes'));
+        }
+    } else {
+        // New angeltype
+        if ($supporter_mode) {
+            // Supporters aren't allowed to create new angeltypes.
+            throw_redirect(url('/angeltypes'));
+        }
+        $angeltype = new AngelType();
+    }
+
+    if ($request->hasPostData('submit')) {
+        $valid = true;
+
+        if (!$supporter_mode) {
+            if ($request->has('name')) {
+                $name = substr(strip_item($request->postData('name')), 0, 255);
+                $nameQuery = AngelType::whereName($name);
+                if ($angeltype->id) {
+                    $nameQuery->where('id', '!=', $angeltype->id);
+                }
+                $valid = !$nameQuery->exists();
+                $angeltype->name = $name;
+                if (!$valid) {
+                    error(__('Please check the name. Maybe it already exists.'));
+                }
+            }
+
+            if ($request->has('short_name')) {
+                $angeltype->short_name = substr(strip_item($request->postData('short_name')), 0, 50) ?: null;
+            }
+
+            $angeltype->restricted = $request->has('restricted');
+            $angeltype->shift_self_signup = $request->has('shift_self_signup');
+            $angeltype->show_on_dashboard = $request->has('show_on_dashboard');
+            $angeltype->hide_register = $request->has('hide_register');
+            $angeltype->hide_on_shift_view = $request->has('hide_on_shift_view');
+
+            $angeltype->requires_driver_license = $request->has('requires_driver_license');
+            $angeltype->requires_ifsg_certificate = $request->has('requires_ifsg_certificate');
+        }
+
+        $angeltype->description = strip_request_item_nl('description', $angeltype->description);
+
+        $angeltype->contact_name = strip_request_item('contact_name', $angeltype->contact_name);
+        $angeltype->contact_dect = strip_request_item('contact_dect', $angeltype->contact_dect) ?: '';
+        $angeltype->contact_email = strip_request_item('contact_email', $angeltype->contact_email);
+
+        if ($valid) {
+            $angeltype->save();
+
+            success(__('Angel type saved.'));
+            engelsystem_log(
+                'Saved angel type: ' . $angeltype->name . ($angeltype->restricted ? ', restricted' : '')
+                . ($angeltype->shift_self_signup ? ', shift_self_signup' : '')
+                . (config('driving_license_enabled')
+                    ? (($angeltype->requires_driver_license ? ', requires driver license' : '') . ', ')
+                    : '')
+                . (config('ifsg_enabled')
+                    ? (($angeltype->requires_ifsg_certificate ? ', requires ifsg certificate' : '') . ', ')
+                    : '')
+                . $angeltype->contact_name . ', '
+                . $angeltype->contact_dect . ', '
+                . $angeltype->contact_email . ', '
+                . $angeltype->show_on_dashboard . ', '
+                . $angeltype->hide_register . ', '
+                . $angeltype->hide_on_shift_view
+            );
+            throw_redirect(angeltype_link($angeltype->id));
+        }
+    }
+
+    return [
+        sprintf(__('Edit %s'), htmlspecialchars((string) $angeltype->name)),
+        AngelType_edit_view($angeltype, $supporter_mode),
+    ];
+}
+
+/**
  * View details of a given angeltype.
  *
  * @return array
