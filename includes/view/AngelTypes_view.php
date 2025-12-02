@@ -19,16 +19,19 @@ use Illuminate\Support\Collection;
  *
  * @param AngelType $angeltype
  * @param bool $plain
+ * @param bool $useShortName Whether to use short name if available
  * @return string
  */
-function AngelType_name_render(AngelType $angeltype, $plain = false)
+function AngelType_name_render(AngelType $angeltype, $plain = false, $useShortName = false)
 {
+    $name = $useShortName && $angeltype->short_name ? $angeltype->short_name : $angeltype->name;
+
     if ($plain) {
-        return sprintf('%s (%u)', $angeltype->name, $angeltype->id);
+        return sprintf('%s (%u)', $name, $angeltype->id);
     }
 
     return '<a href="' . angeltype_link($angeltype->id) . '">'
-        . ($angeltype->restricted ? icon('mortarboard-fill') : '') . htmlspecialchars($angeltype->name)
+        . ($angeltype->restricted ? icon('mortarboard-fill') : '') . htmlspecialchars($name)
         . '</a>';
 }
 
@@ -136,6 +139,9 @@ function AngelType_edit_view(AngelType $angeltype, bool $supporter_mode)
                         $supporter_mode
                             ? form_info(__('general.name'), htmlspecialchars($angeltype->name))
                             : form_text('name', __('general.name'), $angeltype->name, false, 255),
+                        $supporter_mode
+                            ? form_info(__('angeltype.short_name'), htmlspecialchars($angeltype->short_name ?: ''))
+                            : form_text('short_name', __('angeltype.short_name'), $angeltype->short_name, false, 50),
                         form_textarea('description', __('general.description'), $angeltype->description),
                         form_info('', __('Please use markdown for the description.')),
                         heading(__('Contact'), 3),

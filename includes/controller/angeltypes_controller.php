@@ -116,6 +116,10 @@ function angeltype_edit_controller()
                 }
             }
 
+            if ($request->has('short_name')) {
+                $angeltype->short_name = substr(strip_item($request->postData('short_name')), 0, 50) ?: null;
+            }
+
             $angeltype->restricted = $request->has('restricted');
             $angeltype->shift_self_signup = $request->has('shift_self_signup');
             $angeltype->show_on_dashboard = $request->has('show_on_dashboard');
