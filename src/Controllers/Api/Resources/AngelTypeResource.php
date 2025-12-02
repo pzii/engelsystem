@@ -18,6 +18,7 @@ class AngelTypeResource extends BasicResource
         return [
             'id' => $this->model->id,
             'name' => $this->model->name,
+            'short_name' => $this->model->short_name,
             'description' => $this->model->description,
             'restricted' => $this->model->restricted,
             'contact' => [
