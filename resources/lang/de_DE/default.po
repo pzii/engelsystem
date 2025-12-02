@@ -1937,6 +1937,12 @@ msgid "angeltypes.hide_on_shift_view.info"
 msgstr "Wenn ausgewählt, können nur Admins und Mitglieder des Engeltyps auf der "
 "Schicht Seite die Filteroption für diesen Engeltyp sehen."
 
+msgid "angeltype.short_name"
+msgstr "Kurzname"
+
+msgid "angeltype.short_name.info"
+msgstr "Optionaler abgekürzter Name für kompakte Ansichten wie Schichtpläne"
+
 msgid "angeltypes.qr"
 msgstr "Engeltyp \"%s\" beitreten QR Code"
 
