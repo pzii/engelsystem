@@ -471,7 +471,12 @@ return [
     // Shifts overview
     // Set max number of hours that can be shown at once
     // 0 means no limit
-    'filter_max_duration'     => env('FILTER_MAX_DURATION', 0),
+    'filter_max_duration'       => env('FILTER_MAX_DURATION', 0),
+
+    // Enabling the compact shift view will reduce blank time intervals between start of the day (00:00)
+    // and the beginning of the first shift and between the end of the last shift and midnight.
+    // This completely removes days without any shift.
+    'enable_compact_shift_view' => env('ENABLE_COMPACT_SHIFT_VIEW', false),
 
     // Session config
     'session'                 => [
