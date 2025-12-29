@@ -957,6 +957,24 @@ msgstr "Start"
 msgid "shifts.end"
 msgstr "End"
 
+msgid "shifts.cancelled"
+msgstr "Cancelled"
+
+msgid "shifts.cancel"
+msgstr "Cancel shift"
+
+msgid "shifts.enable"
+msgstr "Enable shift"
+
+msgid "shifts.cancelled.info"
+msgstr "This shift has been cancelled. You cannot sign up for cancelled shifts."
+
+msgid "shifts.cancelled.success"
+msgstr "Shift successfully cancelled."
+
+msgid "shifts.enabled.success"
+msgstr "Shift successfully enabled."
+
 msgid "user.info"
 msgstr "User info"
 
