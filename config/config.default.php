@@ -214,13 +214,6 @@ return [
         ],
     ],
 
-    // Regular expression and replacement character used for transformation
-    // of the username synced with SSO. This transformation is applied only to
-    // to usernames imported from and kept in sync with OAuth (i.e., if the
-    // username is included in sso_fields_to_sync and the user logs in via OAuth).
-    'username_sync_pattern' => '/[^\p{L}\p{N}_.-]/ui',
-    'username_sync_replace' => '-',
-
     // Available T-shirt sizes
     // To disable a t-shirt size in config.php, you can set its value to null
     'tshirt_sizes'            => [
