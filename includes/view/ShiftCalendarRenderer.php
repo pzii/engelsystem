@@ -2,7 +2,7 @@
 
 namespace Engelsystem;
 
-use Engelsystem\Helpers\Carbon;
+use Carbon\Carbon;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\Shifts\Shift;
 use Engelsystem\Models\Shifts\ShiftEntry;
@@ -46,6 +46,9 @@ class ShiftCalendarRenderer
     /** @var int */
     private $blocksPerSlot = null;
 
+    /** @var array */
+    private $startAndEndPerDay;
+
     /**
      * ShiftCalendarRenderer constructor.
      *
@@ -60,6 +63,7 @@ class ShiftCalendarRenderer
         $this->firstBlockStartTime = $this->calcFirstBlockStartTime($shifts);
         $this->lastBlockEndTime = $this->calcLastBlockEndTime($shifts);
         $this->lanes = $this->assignShiftsToLanes($shifts);
+        $this->startAndEndPerDay = config('shift_view.enable_compact_view') ? $this->collectStartAndEndPerDay($shifts) : null;
     }
 
     /**
@@ -101,6 +105,105 @@ class ShiftCalendarRenderer
         }
 
         return $lanes;
+    }
+
+    /**
+     * Merges the provides time range [$start, $end] into a list of existing time spans per day
+     *
+     * @param Carbon[][] $times  List of existing time spans per day
+     * @param Carbon $start      Start datetime of the to-be-added time span
+     * @param Carbon $end        End datetime of the to-be-added time span
+     * @return Carbon[][]        Modified list of time spans per day
+     */
+    public static function mergeTimeSpanIntoList(array $times, Carbon $start, Carbon $end): array
+    {
+        $dateStr = self::getDateStr($start);
+
+        if (!array_key_exists($dateStr, $times)) {
+            $times[$dateStr] = [$start, $end];
+        } else {
+            $times[$dateStr][0] = min($times[$dateStr][0], $start);
+            $times[$dateStr][1] = max($times[$dateStr][1], $end);
+        }
+
+        return $times;
+    }
+
+    /**
+     * @param Shift[] $shifts The shifts to analyse and assign to days
+     * @return array An array of date => [startdatetime; enddatetime]
+     */
+    public static function collectStartAndEndPerDay($shifts): array
+    {
+        $times = [];
+        foreach ($shifts as $shift) {
+            if ($shift->start->dayOfMillennium != $shift->end->dayOfMillennium) {
+                // Special case for shifts over midnight, or spanning multiple days
+
+                // Handle the start day: Start at shift start, end at (roughly) midnight
+                $startDayEnd = $shift->start->clone();
+                $startDayEnd->setTime(23, 59);
+
+                $times = self::mergeTimeSpanIntoList($times, $shift->start, $startDayEnd);
+
+                // If a shift spans multiple days, show the whole days between the start and end day
+                $daysBetween = $shift->start->daysUntil($shift->end->clone()->setTimeFrom($shift->start));
+                $daysBetween->excludeStartDate(true);
+                $daysBetween->excludeEndDate(true);
+                foreach ($daysBetween as $date) {
+                    $dayStart = $date->clone();
+                    $dayStart->minuteOfDay(0);
+
+                    $dayEnd = $date->clone();
+                    $dayEnd->setTime(23, 59);
+
+                    $times = self::mergeTimeSpanIntoList($times, $dayStart, $dayEnd);
+                }
+
+                // Handle the end day: Start at midnight, end at the shift end
+                $endDayStart = $shift->end->clone();
+                $endDayStart->minuteOfDay(0);
+
+                $times = self::mergeTimeSpanIntoList($times, $endDayStart, $shift->end);
+            } else {
+                // The simple case with a shift starting and ending on the same day
+                $times = self::mergeTimeSpanIntoList($times, $shift->start, $shift->end);
+            }
+        }
+
+        // extend time spans per day by 30 minutes earlier/later, rounded to 15 minute blocks
+        foreach ($times as $interval) {
+            $startMinOfDay = $interval[0]->minuteOfDay;
+            $interval[0]->minuteOfDay(max(0, $startMinOfDay - 30 - (($startMinOfDay - 30) % 15)));
+
+            $endMinOfDay = $interval[1]->minuteOfDay;
+            $interval[1]->minuteOfDay(min(23 * 60 + 59, $endMinOfDay + 30 + (($endMinOfDay + 30) % 15) - 1));
+        }
+
+        return $times;
+    }
+
+    private function getStartAndEnd(Carbon $date): array
+    {
+        if (!config('shift_view.enable_compact_view')) {
+            $dayStart = $date->clone();
+            $dayStart->minuteOfDay(0);
+            $dayEnd = $date->clone();
+            $dayEnd->setTime(23, 59);
+
+            return [$dayStart, $dayEnd];
+        }
+        $dateStr = self::getDateStr($date);
+
+        return array_key_exists($dateStr, $this->startAndEndPerDay) ? $this->startAndEndPerDay[$dateStr] : [null, null];
+    }
+
+    /**
+     * @return string
+     */
+    private static function getDateStr($carbon)
+    {
+        return sprintf('%04d-%02d-%02d', $carbon->year, $carbon->month, $carbon->day);
     }
 
     /**
@@ -175,10 +278,14 @@ class ShiftCalendarRenderer
         $shift_renderer = new ShiftCalendarShiftRenderer();
         $html = '';
         $rendered_until = $this->getFirstBlockStartTime();
+        $previous_tick = 0;
 
         foreach ($lane->getShifts() as $shift) {
             while ($rendered_until + ShiftCalendarRenderer::SECONDS_PER_ROW <= $shift->start->timestamp) {
-                $html .= $this->renderTick($rendered_until);
+                if ($this->shouldRenderTick($rendered_until)) {
+                    $html .= $this->renderTick($rendered_until, $previous_tick);
+                    $previous_tick = $rendered_until;
+                }
                 $rendered_until += ShiftCalendarRenderer::SECONDS_PER_ROW;
             }
 
@@ -220,7 +327,10 @@ class ShiftCalendarRenderer
         }
 
         while ($rendered_until < $this->getLastBlockEndTime()) {
-            $html .= $this->renderTick($rendered_until);
+            if ($this->shouldRenderTick($rendered_until)) {
+                $html .= $this->renderTick($rendered_until, $previous_tick);
+                $previous_tick = $rendered_until;
+            }
             $rendered_until += ShiftCalendarRenderer::SECONDS_PER_ROW;
         }
 
@@ -239,8 +349,9 @@ class ShiftCalendarRenderer
      * @param boolean $label Should time labels be generated?
      * @return string rendered tick html
      */
-    private function renderTick($time, $label = false)
+    private function renderTick($time, $previousTickTimestamp, $label = false)
     {
+        $previousTickTime = Carbon::createFromTimestamp($previousTickTimestamp, Carbon::now()->timezone);
         $time = Carbon::createFromTimestamp($time, Carbon::now()->timezone);
         $class = $label ? 'tick bg-' . theme_type() : 'tick ';
 
@@ -249,7 +360,7 @@ class ShiftCalendarRenderer
             $class .= ' now';
         }
 
-        if ($time->isStartOfDay()) {
+        if ($time->isStartOfDay() || $time->dayOfYear != $previousTickTime->dayOfYear) {
             if (!$label) {
                 return div($class . ' day');
             }
@@ -281,11 +392,34 @@ class ShiftCalendarRenderer
                 __('log.time'),
             ]),
         ];
+        $previous_tick = 0;
         for ($block = 0; $block < $this->getBlocksPerSlot(); $block++) {
             $thistime = $this->getFirstBlockStartTime() + ($block * ShiftCalendarRenderer::SECONDS_PER_ROW);
-            $time_slot[] = $this->renderTick($thistime, true);
+
+            if ($this->shouldRenderTick($thistime)) {
+                $time_slot[] = $this->renderTick($thistime, $previous_tick, true);
+                $previous_tick = $thistime;
+            }
         }
         return div('lane time', $time_slot);
+    }
+
+    private function shouldRenderTick($thistime): bool
+    {
+        // always render ticks when the compact view is not enabled
+        if (!config('shift_view.enable_compact_view')) {
+            return true;
+        }
+
+        $thistimeCarbon = Carbon::createFromTimestamp($thistime, Carbon::now()->timezone);
+        $dateStr = $this->getDateStr($thistimeCarbon);
+
+        if (array_key_exists($dateStr, $this->startAndEndPerDay)) {
+            list($startOfDay, $endOfDay) = $this->startAndEndPerDay[$dateStr];
+
+            return $startOfDay <= $thistimeCarbon && $thistimeCarbon < $endOfDay;
+        }
+        return false;
     }
 
     /**
@@ -310,7 +444,7 @@ class ShiftCalendarRenderer
      * @param Shift[] $shifts
      * @return int
      */
-    private function calcLastBlockEndTime($shifts)
+    private function calcLastBlockEndTime($shifts): float
     {
         $end_time = $this->shiftsFilter->getStartTime();
         foreach ($shifts as $shift) {
