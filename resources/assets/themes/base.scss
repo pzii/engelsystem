@@ -283,6 +283,9 @@ table.table-sticky-header thead {
       writing-mode: sideways-lr;
       text-align: center;
       font-size: x-large;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .dow.today {
