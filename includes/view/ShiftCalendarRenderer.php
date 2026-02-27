@@ -500,6 +500,7 @@ class ShiftCalendarRenderer
             badge(__('Other angel type needed / collides with my shifts'), 'warning'),
             badge(__('Shift is full'), 'success'),
             badge(__('Shift is running/has ended, you have not arrived or signup is blocked otherwise'), 'secondary'),
+            badge(__('shifts.cancelled'), 'secondary'),
         ]);
     }
 }

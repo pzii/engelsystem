@@ -237,6 +237,7 @@ $route->addGroup(
             function (RouteCollector $route): void {
                 $route->get('/history', 'Admin\\ShiftsController@history');
                 $route->post('/history', 'Admin\\ShiftsController@deleteTransaction');
+                $route->post('/{shift_id:\d+}/toggle-cancelled', 'Admin\\ShiftsController@toggleCancelled');
             }
         );
 

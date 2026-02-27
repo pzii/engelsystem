@@ -45,8 +45,8 @@ class ShiftSignupState
     private function valueForState(ShiftSignupStatus $state)
     {
         return match ($state) {
-            ShiftSignupStatus::NOT_ARRIVED, ShiftSignupStatus::NOT_YET, ShiftSignupStatus::SHIFT_ENDED => 100,
-            ShiftSignupStatus::SIGNED_UP, ShiftSignupStatus::MISSING_LOCATION_ACCESS => 90,
+            ShiftSignupStatus::NOT_ARRIVED, ShiftSignupStatus::NOT_YET, ShiftSignupStatus::SHIFT_ENDED, ShiftSignupStatus::CANCELLED => 100,
+            ShiftSignupStatus::SIGNED_UP, ShiftSignupStatus::MISSING_LOCATION_ACCESS => 90, => 90,
             ShiftSignupStatus::FREE      => 80,
             ShiftSignupStatus::ANGELTYPE, ShiftSignupStatus::COLLIDES => 70,
             ShiftSignupStatus::OCCUPIED,  ShiftSignupStatus::ADMIN    => 60,

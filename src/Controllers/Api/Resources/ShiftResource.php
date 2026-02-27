@@ -27,6 +27,7 @@ class ShiftResource extends BasicResource
             'schedule_guid' => $this->model->scheduleShift?->guid,
             'created_at' => $this->model->created_at,
             'updated_at' => $this->model->updated_at,
+            'cancelled' => $this->model->cancelled,
             'url' => url('/shifts', ['action' => 'view', 'shift_id' => $this->model->id]),
         ];
     }

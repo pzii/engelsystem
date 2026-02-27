@@ -498,6 +498,11 @@ function Shift_signup_allowed_angel(
 ) {
     $free_entries = Shift_free_entries($needed_angeltype, $shift_entries);
 
+    // Check if shift is cancelled - angels cannot sign up for cancelled shifts
+    if ($shift->cancelled) {
+        return new ShiftSignupState(ShiftSignupStatus::CANCELLED, $free_entries);
+    }
+
     if (is_null($user_shifts) || $user_shifts->isEmpty()) {
         $user_shifts = Shifts_by_user($user->id);
     }
@@ -657,6 +662,12 @@ function Shift_signup_allowed(
     AngelType $needed_angeltype,
     $shift_entries
 ) {
+    // Check if shift is cancelled - only admins can manage cancelled shifts
+    if ($shift->cancelled && !auth()->can('user_shifts_admin')) {
+        $free_entries = Shift_free_entries($needed_angeltype, $shift_entries);
+        return new ShiftSignupState(ShiftSignupStatus::CANCELLED, $free_entries);
+    }
+
     if (auth()->can('user_shifts_admin')) {
         return Shift_signup_allowed_admin($needed_angeltype, $shift_entries);
     }

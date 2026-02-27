@@ -22,15 +22,20 @@ use Illuminate\Support\Collection;
  */
 function Shift_view_header(Shift $shift, Location $location)
 {
+    $titleContent = '<h4>' . __('title.title') . '</h4>';
+    $titleContent .= '<p class="lead">';
+    if ($shift->cancelled) {
+        $titleContent .= '<span class="badge bg-warning text-dark fs-6 me-2">'
+            . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
+            . '</span><br>';
+    }
+    $titleContent .= ($shift->url != ''
+        ? '<a href="' . htmlspecialchars($shift->url) . '">' . htmlspecialchars($shift->title) . '</a>'
+        : htmlspecialchars($shift->title));
+    $titleContent .= '</p>';
+
     return div('row', [
-        div('col-sm-3 col-xs-6', [
-            '<h4>' . __('title.title') . '</h4>',
-            '<p class="lead">'
-            . ($shift->url != ''
-                ? '<a href="' . htmlspecialchars($shift->url) . '">' . htmlspecialchars($shift->title) . '</a>'
-                : htmlspecialchars($shift->title))
-            . '</p>',
-        ]),
+        div('col-sm-3 col-xs-6', [$titleContent]),
         div('col-sm-3 col-xs-6', [
             '<h4>' . __('shifts.start') . '</h4>',
             '<p class="lead' . (time() >= $shift->start->timestamp ? ' text-success' : '') . '">',
@@ -207,6 +212,32 @@ function Shift_view(
         $buttons = [
             $shift_admin ? button(shift_edit_link($shift), icon('pencil'), '', '', __('form.edit')) : '',
             $shift_admin ? form([
+                form_submit(
+                    'toggle_cancelled',
+                    $shift->cancelled ? icon('check-circle-fill') . __('shifts.enable') : icon('x-circle-fill') . __('shifts.cancel'),
+                    '',
+                    false,
+                    $shift->cancelled ? 'success' : 'warning',
+                    $shift->cancelled ? __('shifts.enable') : __('shifts.cancel'),
+                    [
+                        'confirm_submit_title' => $shift->cancelled
+                            ? __('Do you want to enable the shift "%s" from %s to %s?', [
+                                $shift->shiftType->name,
+                                $shift->start->format(__('general.datetime')),
+                                $shift->end->format(__('H:i')),
+                            ])
+                            : __('Do you want to cancel the shift "%s" from %s to %s?', [
+                                $shift->shiftType->name,
+                                $shift->start->format(__('general.datetime')),
+                                $shift->end->format(__('H:i')),
+                            ]),
+                        'confirm_button_text' => $shift->cancelled
+                            ? icon('check-circle-fill') . __('shifts.enable')
+                            : icon('x-circle-fill') . __('shifts.cancel'),
+                    ]
+                ),
+            ], url('/admin/shifts/' . $shift->id . '/toggle-cancelled'), 'POST') : '',
+            $shift_admin ? form([
                 form_hidden('delete_shift', $shift->id),
                 form_submit(
                     'delete',
@@ -296,12 +327,21 @@ function Shift_view(
             ])
             . '"></span></small>';
     }
+
+    $cancelled_title_indicator = '';
+    if ($shift->cancelled) {
+        $cancelled_title_indicator = ' <span class="badge bg-warning text-dark">'
+            . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
+            . '</span>';
+    }
+
     $link = button(url('/user-shifts'), icon('chevron-left'), 'btn-sm', '', __('general.back'));
     return page_with_title(
         $link . ' '
         . htmlspecialchars($shift->shiftType->name)
         . ' <small title="' . $start . '" data-countdown-ts="' . $shift->start->timestamp . '">%c</small>'
-        . $night_shift_hint,
+        . $night_shift_hint
+        . $cancelled_title_indicator,
         $content
     );
 }
@@ -320,12 +360,16 @@ function Shift_view_alert_render(
 ) {
     $alert = '';
 
+    if ($shift->cancelled) {
+        $alert = warning(__('shifts.cancelled.info'), true);
+    }
+
     if ($shift_signup_state->getState() === ShiftSignupStatus::COLLIDES) {
-        $alert = warning(__('This shift collides with one of your shifts.'), true);
+        $alert .= warning(__('This shift collides with one of your shifts.'), true);
     }
 
     if ($shift_signup_state->getState() === ShiftSignupStatus::SIGNED_UP) {
-        $alert = info(__('You are signed up for this shift.')
+        $alert .= info(__('You are signed up for this shift.')
             . (($shift->start->subHours(config('last_unsubscribe')) < Carbon::now() && $shift->end > Carbon::now())
                 ? ' ' . __('shift.sign_out.hint', [config('last_unsubscribe')])
                 : ''), true);
@@ -333,7 +377,7 @@ function Shift_view_alert_render(
 
     $signupAdvanceSeconds = ($shift->shiftType->signup_advance_hours ?: config('signup_advance_hours')) * 3600;
     if ($signupAdvanceSeconds && $shift->start->timestamp > time() + $signupAdvanceSeconds) {
-        $alert = info(sprintf(
+        $alert .= info(sprintf(
             __('This shift is in the far future. It becomes available for signup at %s.'),
             date(__('general.datetime'), $shift->start->timestamp - $signupAdvanceSeconds)
         ), true);
