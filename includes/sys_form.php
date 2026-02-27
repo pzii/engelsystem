@@ -375,3 +375,24 @@ function html_select_key($dom_id, $name, $rows, $selected, $selectText = '')
     $html .= '</select>';
     return $html;
 }
+
+/**
+ * Renders a time selector
+ *
+ * @param string $id    ID of the input element
+ * @param string $name  Name of the input element
+ * @param mixed $value
+ *
+ * @return string HTML
+ */
+function form_time(string $id, string $name, $value)
+{
+    return '<div class="input-group time">
+                            <input type="time" class="form-control" id="' . $id . '" name="' . $name . '" size="5"
+                                pattern="^\d{1,2}:\d{2}$" placeholder="HH:MM" maxlength="5" value="' . $value . '"
+                            >
+                            <button class="btn btn-secondary" title="Now" type="button">
+                                <span class="bi bi-arrow-counterclockwise"></span>
+                            </button>
+                        </div>';
+}
