@@ -469,6 +469,18 @@ msgstr "Beitreten QR Code"
 msgid "config.join_qr_code.info"
 msgstr "Erlaubt das beitreten zu einem Engeltypen mit einem QR Code, benötigt app_key"
 
+msgid "config.shift_view.enable_compact_view"
+msgstr "Kompakter Schichtkalender"
+
+msgid "config.shift_view.enable_compact_view.info"
+msgstr "Versteckt Zeiten im Schichtkalender, zu denen keine Schichten konfiguriert sind."
+
+msgid "config.shift_view.enable_date_lane"
+msgstr "Dedizierte Datumsspalte im Schichtkalender"
+
+msgid "config.shift_view.enable_date_lane.info"
+msgstr "Zeigt zusätzlich Datum und Tag der Woche an."
+
 msgid "config.certificates"
 msgstr "Zertifikate"
 
@@ -755,3 +767,90 @@ msgstr "Anzahl Sekunden die bei externen Anfragen gewartet wird, zum Beispiel be
 
 msgid "config.warning_logout"
 msgstr "Änderungen führen zum logout aller Benutzer!"
+
+msgid "config.maintenance"
+msgstr "Wartungsmodus "
+
+msgid "config.maintenance.info"
+msgstr "Zeigt eine statische Seite bei allen Anfragen)"
+
+msgid "config.environment"
+msgstr "Umgebung"
+
+msgid "config.environment.info"
+msgstr "\"development\" zeigt mehr Debuggingmeldungen"
+
+msgid "config.documentation_url"
+msgstr "Dokumentations-URL"
+
+msgid "config.documentation_url.info"
+msgstr "Link zur Dokumentation/Hilfe"
+
+msgid "config.setup_admin_password"
+msgstr "Setup admin Password"
+
+msgid "config.setup_admin_password.info"
+msgstr "Initiales admin Password, verwendet beim datenbank aufsetzen"
+
+msgid "config.password_algorithm"
+msgstr "Password Algorithmus"
+
+msgid "config.password_algorithm.info"
+msgstr ""
+"Definiert den Algorithmus für `password_verify()`. "
+"Wen ein Benutzerpasswort mit einem alten Algorithmus gehasht wurde, "
+"wird es beim nächsten Login in das neue Format konvertiert. "
+"Siehe https://secure.php.net/manual/en/password.constants.php für eine vollständige Liste."
+
+msgid "config.username_regex"
+msgstr "Username Filter-Regex"
+
+msgid "config.username_regex.info"
+msgstr ""
+"Regulärer Ausdruck der einen nicht erlaubten Benutzernamen beschreibt. "
+"Standardmäßig sind nur Buchstaben artige Zeichen, Zahlen und \"-\", \"_\" sowie \".\" erlaubt."
+
+msgid "config.disabled_user_view_columns"
+msgstr "Versteckte User-Tabellen-Spalten"
+
+msgid "config.disabled_user_view_columns.info"
+msgstr "Versteckt dei Spalten in der Benutzer Tabelle im Adminbereich, möglich sind alle Sortierparameter"
+
+msgid "config.trusted_proxies"
+msgstr "Vertrauenswürdige Proxies"
+
+msgid "config.trusted_proxies.info"
+msgstr "IP Adressen von vertrauenswürdigen Reverse-Proxies als Array oder Kommaseparierte Liste"
+
+msgid "config.add_headers"
+msgstr "Weitere Header hinzufügen"
+
+msgid "config.jwt_algorithm"
+msgstr "JWT Algorithms"
+
+msgid "config.metrics"
+msgstr "/metrics buckets"
+
+msgid "config.var_dump_server"
+msgstr "var_dump Server"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
