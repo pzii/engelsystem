@@ -85,39 +85,6 @@ function stats_hours_to_work(?ShiftsFilter $filter = null): int|string
     return $result['count'] ?: '-';
 }
 
-function stats_get_needed_angels_overview(int $hours): array
-{
-    $inXhours = Carbon::now()->addHours($hours)->toDateTimeString();
-
-    $result = Db::select('
-    SELECT id AS shift_id, title as shift_title, (
-        SELECT SUM(needed_angel_types.`count`)
-            FROM `needed_angel_types`
-            JOIN `angel_types` ON `angel_types`.`id`=`needed_angel_types`.`angel_type_id`
-            WHERE `angel_types`.`name` LIKE "Betreuung %"
-                AND `needed_angel_types`.`shift_id`=`shifts`.`id`
-        ) AS needed_angels, (
-        SELECT angel_types.`name`
-            FROM `needed_angel_types`
-            JOIN `angel_types` ON `angel_types`.`id`=`needed_angel_types`.`angel_type_id`
-            WHERE `angel_types`.`name` LIKE "Betreuung %"
-                        AND `needed_angel_types`.`shift_id`=`shifts`.`id`
-        ) AS angel_type_name, (
-        SELECT COUNT(*)
-            FROM `shift_entries`
-            JOIN `angel_types` ON `angel_types`.`id`=`shift_entries`.`angel_type_id`
-            WHERE `shift_entries`.`shift_id`=`shifts`.`id`
-                AND `freeloaded_by` IS NULL
-            ) AS angels_already_signed_up
-                
-        FROM `shifts`
-        LEFT JOIN schedule_shift AS s on shifts.id = s.shift_id
-        WHERE shifts.`end` > NOW() AND shifts.`start` < ?
-        AND s.shift_id IS NULL;', [
-        $inXhours,
-    ]);
-    return $result;
-}
 
 /**
  * Returns the number of currently infeasible shifts in the next X days
