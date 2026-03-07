@@ -85,18 +85,26 @@ class ShiftsController extends BaseController
         $shiftId = $request->getAttribute('shift_id');
         $shift = Shift::findOrFail($shiftId);
 
-        $shift->cancelled = !$shift->cancelled;
+        if ($shift->cancelled) {
+            $shift->enable();
+        } else {
+            $cancelReason = $request->postData('cancel_reason', '');
+            $shift->cancel($cancelReason);
+        }
+
         $shift->updatedBy()->associate(auth()->user());
         $shift->save();
 
         $this->log->info(
-            'Shift {action}: {title} / {type} from {start} to {end}',
+            'Shift {action}: {title} / {type} from {start} to {end}'
+            . ($shift->cancelled && $shift->cancel_reason ? ' reason: {reason}' : ''),
             [
                 'action' => $shift->cancelled ? 'cancelled' : 'enabled',
                 'title' => $shift->title,
                 'type' => $shift->shiftType->name,
                 'start' => $shift->start->format('Y-m-d H:i'),
                 'end' => $shift->end->format('Y-m-d H:i'),
+                'reason' => $shift->cancel_reason,
             ]
         );
 

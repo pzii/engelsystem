@@ -313,7 +313,11 @@ class ShiftCalendarShiftRenderer
 
         $cancelled_indicator = '';
         if ($shift->cancelled) {
-            $cancelled_indicator = ' <span class="badge bg-warning text-dark ms-1" title="' . __('shifts.cancelled') . '">'
+            $cancelTitle = __('shifts.cancelled');
+            if ($shift->cancel_reason) {
+                $cancelTitle .= ': ' . htmlspecialchars($shift->cancel_reason);
+            }
+            $cancelled_indicator = ' <span class="badge bg-warning text-dark ms-1" title="' . $cancelTitle . '">'
                 . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
                 . '</span>';
         }

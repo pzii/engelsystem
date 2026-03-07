@@ -2065,6 +2065,9 @@ msgstr "Abgesagt"
 msgid "shifts.cancel"
 msgstr "Schicht absagen"
 
+msgid "shifts.cancel_reason"
+msgstr "Grund"
+
 msgid "shifts.enable"
 msgstr "Schicht aktivieren"
 

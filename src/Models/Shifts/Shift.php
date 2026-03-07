@@ -32,6 +32,7 @@ use Illuminate\Database\Query\JoinClause;
  * @property int                               $location_id
  * @property string|null                       $transaction_id
  * @property bool                              $cancelled
+ * @property string                            $cancel_reason
  * @property int                               $created_by
  * @property int|null                          $updated_by
  * @property Carbon|null                       $created_at
@@ -71,6 +72,7 @@ class Shift extends BaseModel
         'url'            => '',
         'transaction_id' => null,
         'cancelled'      => false,
+        'cancel_reason'  => '',
         'updated_by'     => null,
     ];
 
@@ -84,6 +86,7 @@ class Shift extends BaseModel
         'created_by'    => 'integer',
         'updated_by'    => 'integer',
         'cancelled'     => 'boolean',
+        'cancel_reason' => 'string',
         'start'         => 'datetime',
         'end'           => 'datetime',
     ];
@@ -99,6 +102,7 @@ class Shift extends BaseModel
         'location_id',
         'transaction_id',
         'cancelled',
+        'cancel_reason',
         'created_by',
         'updated_by',
     ];
@@ -277,9 +281,10 @@ class Shift extends BaseModel
     /**
      * Cancel the shift
      */
-    public function cancel(): self
+    public function cancel(string $reason = ''): self
     {
         $this->cancelled = true;
+        $this->cancel_reason = $reason;
         return $this;
     }
 
@@ -289,6 +294,7 @@ class Shift extends BaseModel
     public function enable(): self
     {
         $this->cancelled = false;
+        $this->cancel_reason = '';
         return $this;
     }
 

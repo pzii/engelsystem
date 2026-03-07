@@ -28,6 +28,7 @@ class ShiftResource extends BasicResource
             'created_at' => $this->model->created_at,
             'updated_at' => $this->model->updated_at,
             'cancelled' => $this->model->cancelled,
+            'cancel_reason' => $this->model->cancel_reason,
             'url' => url('/shifts', ['action' => 'view', 'shift_id' => $this->model->id]),
         ];
     }

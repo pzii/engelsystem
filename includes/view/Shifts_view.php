@@ -28,6 +28,9 @@ function Shift_view_header(Shift $shift, Location $location)
         $titleContent .= '<span class="badge bg-warning text-dark fs-6 me-2">'
             . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
             . '</span><br>';
+        if ($shift->cancel_reason) {
+            $titleContent .= '<small>' . htmlspecialchars($shift->cancel_reason) . '</small><br>';
+        }
     }
     $titleContent .= ($shift->url != ''
         ? '<a href="' . htmlspecialchars($shift->url) . '">' . htmlspecialchars($shift->title) . '</a>'
@@ -219,7 +222,7 @@ function Shift_view(
                     false,
                     $shift->cancelled ? 'success' : 'warning',
                     $shift->cancelled ? __('shifts.enable') : __('shifts.cancel'),
-                    [
+                    array_merge([
                         'confirm_submit_title' => $shift->cancelled
                             ? __('Do you want to enable the shift "%s" from %s to %s?', [
                                 $shift->shiftType->name,
@@ -234,7 +237,10 @@ function Shift_view(
                         'confirm_button_text' => $shift->cancelled
                             ? icon('check-circle-fill') . __('shifts.enable')
                             : icon('x-circle-fill') . __('shifts.cancel'),
-                    ]
+                    ], $shift->cancelled ? [] : [
+                        'confirm_input_name' => 'cancel_reason',
+                        'confirm_input_label' => __('shifts.cancel_reason'),
+                    ])
                 ),
             ], url('/admin/shifts/' . $shift->id . '/toggle-cancelled'), 'POST') : '',
             $shift_admin ? form([
@@ -330,7 +336,8 @@ function Shift_view(
 
     $cancelled_title_indicator = '';
     if ($shift->cancelled) {
-        $cancelled_title_indicator = ' <span class="badge bg-warning text-dark">'
+        $cancelled_title_indicator = ' <span class="badge bg-warning text-dark"'
+            . ($shift->cancel_reason ? ' title="' . htmlspecialchars($shift->cancel_reason) . '"' : '') . '>'
             . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
             . '</span>';
     }
@@ -361,7 +368,11 @@ function Shift_view_alert_render(
     $alert = '';
 
     if ($shift->cancelled) {
-        $alert = warning(__('shifts.cancelled.info'), true);
+        $message = __('shifts.cancelled.info');
+        if ($shift->cancel_reason) {
+            $message .= ' ' . __('shifts.cancel_reason') . ': ' . htmlspecialchars($shift->cancel_reason);
+        }
+        $alert = warning($message, true);
     }
 
     if ($shift_signup_state->getState() === ShiftSignupStatus::COLLIDES) {

@@ -963,6 +963,9 @@ msgstr "Cancelled"
 msgid "shifts.cancel"
 msgstr "Cancel shift"
 
+msgid "shifts.cancel_reason"
+msgstr "Reason"
+
 msgid "shifts.enable"
 msgstr "Enable shift"
 

@@ -318,6 +318,14 @@ components:
           type: string
           example: https://example.com/shifts/42
           description: Direct link to the shift
+        cancelled:
+          type: boolean
+          description: Whether the shift has been cancelled
+          example: false
+        cancel_reason:
+          type: string
+          description: Plain text reason why the shift was cancelled, empty if not cancelled
+          example: Venue maintenance required
       required:
         - id
         - name
@@ -331,6 +339,8 @@ components:
         - updated_at
         - needed_angel_types
         - url
+        - cancelled
+        - cancel_reason
     ShiftEntry:
       type: object
       properties:

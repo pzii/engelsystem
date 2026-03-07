@@ -305,6 +305,12 @@ const confirmationModal = (element) => {
     event.preventDefault();
 
     document.getElementById('confirmation-modal')?.remove();
+
+    const inputName = element.dataset.confirm_input_name ?? '';
+    const inputLabel = element.dataset.confirm_input_label ?? '';
+    const hasInput = inputName !== '';
+    const hasText = !!element.dataset.confirm_submit_text;
+
     document.body.insertAdjacentHTML(
       'beforeend',
       `
@@ -315,8 +321,9 @@ const confirmationModal = (element) => {
                 <h5 class="modal-title">${element.dataset.confirm_submit_title ?? ''}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body${element.dataset.confirm_submit_text ? '' : ' d-none'}">
-                <p>${element.dataset.confirm_submit_text ?? ''}</p>
+              <div class="modal-body${hasText || hasInput ? '' : ' d-none'}">
+                ${hasText ? `<p>${element.dataset.confirm_submit_text ?? ''}</p>` : ''}
+                ${hasInput ? `<div class="mb-0"><label class="form-label" for="confirmation-modal-input">${inputLabel}</label><input type="text" class="form-control" id="confirmation-modal-input" name="${inputName}"></div>` : ''}
               </div>
               <div class="modal-footer">
                 <button type="button" class="${element.className}"
@@ -339,6 +346,21 @@ const confirmationModal = (element) => {
 
     const modalSubmitButton = modal.querySelector('[data-submit]');
     modalSubmitButton.addEventListener('click', () => {
+      // Copy modal input values to hidden fields in the original form
+      if (hasInput) {
+        const modalInput = modal.querySelector('#confirmation-modal-input');
+        const form = element.closest('form');
+        if (form && modalInput) {
+          let hiddenField = form.querySelector(`input[name="${inputName}"]`);
+          if (!hiddenField) {
+            hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = inputName;
+            form.appendChild(hiddenField);
+          }
+          hiddenField.value = modalInput.value;
+        }
+      }
       element.type = oldType;
       element.click();
       bootstrapModal.hide();
