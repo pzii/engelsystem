@@ -20,6 +20,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property int            $angel_type_id
  * @property int|null       $confirm_user_id
  * @property bool           $supporter
+ * @property string         $description
  *
  * @property-read AngelType $angelType
  * @property-read User|null $confirmUser
@@ -42,10 +43,11 @@ class UserAngelType extends Pivot
     /** @var bool Disable timestamps */
     public $timestamps = false; // phpcs:ignore
 
-    /** @var array<string, null|bool> default attributes */
+    /** @var array<string, null|bool|string> default attributes */
     protected $attributes = [ // phpcs:ignore
         'confirm_user_id' => null,
         'supporter'       => false,
+        'description'     => '',
     ];
 
     /** @var array<string> */
@@ -54,6 +56,7 @@ class UserAngelType extends Pivot
         'angel_type_id',
         'confirm_user_id',
         'supporter',
+        'description',
     ];
 
     /** @var array<string> */
@@ -62,6 +65,7 @@ class UserAngelType extends Pivot
         'angel_type_id'   => 'integer',
         'confirm_user_id' => 'integer',
         'supporter'       => 'boolean',
+        'description'     => 'string',
     ];
 
     /**
@@ -71,7 +75,7 @@ class UserAngelType extends Pivot
      */
     public static function getPivotAttributes(): array
     {
-        return ['id', 'confirm_user_id', 'supporter'];
+        return ['id', 'confirm_user_id', 'supporter', 'description'];
     }
 
     public function angelType(): BelongsTo
