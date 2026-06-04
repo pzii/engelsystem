@@ -88,20 +88,28 @@ function UserAngelTypes_confirm_all_view(AngelType $angeltype)
  */
 function UserAngelType_confirm_view(UserAngelType $user_angeltype, User $user, AngelType $angeltype)
 {
-    return page_with_title(__('Confirm angel type for user'), [
+    $content = [
         msg(),
         info(sprintf(
             __('Do you really want to confirm %s for %s?'),
             $user->displayName,
             $angeltype->name
         ), true),
-        form([
-            buttons([
-                button(angeltype_link($angeltype->id), icon('x-lg') . __('form.cancel')),
-                form_submit('confirm_user', icon('check-lg') . __('Yes'), 'btn-primary', false),
-            ]),
-        ], url('/user-angeltypes', ['action' => 'confirm', 'user_angeltype_id' => $user_angeltype->id])),
-    ]);
+    ];
+
+    if ($user_angeltype->description !== '') {
+        $content[] = '<h4>' . __('About yourself') . '</h4>';
+        $content[] = '<p>' . nl2br(htmlspecialchars($user_angeltype->description)) . '</p>';
+    }
+
+    $content[] = form([
+        buttons([
+            button(angeltype_link($angeltype->id), icon('x-lg') . __('form.cancel')),
+            form_submit('confirm_user', icon('check-lg') . __('Yes'), 'btn-primary', false),
+        ]),
+    ], url('/user-angeltypes', ['action' => 'confirm', 'user_angeltype_id' => $user_angeltype->id]));
+
+    return page_with_title(__('Confirm angel type for user'), $content);
 }
 
 /**
@@ -113,20 +121,28 @@ function UserAngelType_confirm_view(UserAngelType $user_angeltype, User $user, A
  */
 function UserAngelType_delete_view(UserAngelType $user_angeltype, User $user, AngelType $angeltype, bool $isOwnAngelType)
 {
-    return page_with_title(__('Leave angel type'), [
+    $content = [
         msg(),
         info(sprintf(
             $isOwnAngelType ? __('Do you really want to leave "%2$s"?') : __('Do you really want to remove "%s" from "%s"?'),
             $user->displayName,
             $angeltype->name
         ), true),
-        form([
-            buttons([
-                button(angeltype_link($angeltype->id), icon('x-lg') . __('form.cancel')),
-                form_submit('delete', icon('check-lg') . __('Yes'), 'btn-primary', false),
-            ]),
-        ], url('/user-angeltypes', ['action' => 'delete', 'user_angeltype_id' => $user_angeltype->id])),
-    ], true);
+    ];
+
+    if (!$isOwnAngelType && $user_angeltype->description !== '') {
+        $content[] = '<h4>' . __('About yourself') . '</h4>';
+        $content[] = '<p>' . nl2br(htmlspecialchars($user_angeltype->description)) . '</p>';
+    }
+
+    $content[] = form([
+        buttons([
+            button(angeltype_link($angeltype->id), icon('x-lg') . __('form.cancel')),
+            form_submit('delete', icon('check-lg') . __('Yes'), 'btn-primary', false),
+        ]),
+    ], url('/user-angeltypes', ['action' => 'delete', 'user_angeltype_id' => $user_angeltype->id]));
+
+    return page_with_title(__('Leave angel type'), $content, true);
 }
 
 /**
@@ -171,6 +187,9 @@ function UserAngelType_join_view($user, AngelType $angeltype)
         ), true),
         form([
             auth()->can('admin_user_angeltypes') ? form_checkbox('auto_confirm_user', __('Confirm user'), true) : '',
+            $angeltype->restricted
+                ? form_textarea('description', __('About yourself'), '')
+                : '',
             buttons([
                 button(angeltype_link($angeltype->id), icon('x-lg') . __('form.cancel')),
                 form_submit('submit', icon('save') . __('form.save'), 'btn-primary', false),

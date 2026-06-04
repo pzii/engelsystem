@@ -427,6 +427,7 @@ function AngelType_view_members(AngelType $angeltype, $members, $admin_user_ange
                 );
         }
         if ($angeltype->restricted && empty($member->pivot->confirm_user_id)) {
+            $member['description'] = nl2br(htmlspecialchars($member->pivot->description ?? ''));
             $member['actions'] = table_buttons([
                 $edit_certificates,
                 button(
@@ -739,7 +740,13 @@ function AngelType_view_info(
                 icon('trash') . __('Deny all')
             ),
         ]);
-        $info[] = table($table_headers, $members_unconfirmed);
+        $unconfirmed_headers = $table_headers;
+        // Insert description column before actions
+        $actions = $unconfirmed_headers['actions'] ?? '';
+        unset($unconfirmed_headers['actions']);
+        $unconfirmed_headers['description'] = __('About yourself');
+        $unconfirmed_headers['actions'] = $actions;
+        $info[] = table($unconfirmed_headers, $members_unconfirmed);
     }
 
     return join($info);

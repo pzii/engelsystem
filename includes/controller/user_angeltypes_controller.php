@@ -426,9 +426,22 @@ function user_angeltype_join_controller(AngelType $angeltype)
 
     $request = request();
     if ($request->hasPostData('submit')) {
+        $description = '';
+        if ($angeltype->restricted) {
+            $description = trim(strip_tags((string) $request->postData('description')));
+            if ($description === '') {
+                error(__('Please provide a short description of yourself.'));
+                return [
+                    sprintf(__('Join %s'), htmlspecialchars($angeltype->name)),
+                    UserAngelType_join_view($user, $angeltype),
+                ];
+            }
+        }
+
         $userAngelType = new UserAngelType();
         $userAngelType->user()->associate($user);
         $userAngelType->angelType()->associate($angeltype);
+        $userAngelType->description = $description;
         $userAngelType->save();
 
         engelsystem_log(sprintf(
