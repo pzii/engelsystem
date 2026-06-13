@@ -243,7 +243,9 @@ class Controller extends BaseController
     protected function checkAuth(): void
     {
         $apiKey = $this->config->get('api_key');
-        if (empty($apiKey) || $this->request->get('api_key') == $apiKey) {
+        $providedApiKey = (string) $this->request->get('api_key', '');
+
+        if (empty($apiKey) || (is_string($apiKey) && hash_equals($apiKey, $providedApiKey))) {
             return;
         }
 
