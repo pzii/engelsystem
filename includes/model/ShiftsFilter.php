@@ -174,7 +174,10 @@ class ShiftsFilter
      */
     public function setTypes($types)
     {
-        $this->types = $types;
+        $this->types = array_values(array_unique(array_map(
+            static fn ($value) => (int) $value,
+            array_filter((array) $types, static fn ($value) => filter_var($value, FILTER_VALIDATE_INT) !== false)
+        )));
     }
 
     /**
@@ -193,7 +196,10 @@ class ShiftsFilter
      */
     public function setLocations($locations)
     {
-        $this->locations = $locations;
+        $this->locations = array_values(array_unique(array_map(
+            static fn ($value) => (int) $value,
+            array_filter((array) $locations, static fn ($value) => filter_var($value, FILTER_VALIDATE_INT) !== false)
+        )));
     }
 
     /**
