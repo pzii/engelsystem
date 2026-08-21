@@ -22,17 +22,40 @@ class PublicController extends ApiController
     public function cancelledOpeningTimes(Request $request): Response
     {
         $number_of_hours = (int) $request->getAttribute('number_of_hours');
-        $angel_overview = stats_get_needed_angels_overview($number_of_hours);
+        return $this->handleCancelledOpeningTimes($number_of_hours, $number_of_hours);
+    }
+
+    public function cancelledOpeningTimes2(Request $request): Response
+    {
+        $hours_advance_noresponsible = (int) $request->getAttribute('hours_advance_noresponsible');
+        $hours_advance_cancelled = (int) $request->getAttribute('hours_advance_cancelled');
+        return $this->handleCancelledOpeningTimes($hours_advance_cancelled, $hours_advance_noresponsible);
+    }
+
+    public function handleCancelledOpeningTimes(int $hrs_adv_cancelled, int $hrs_adv_noresponsible): Response
+    {
+        $angel_overview = stats_get_needed_angels_overview(max($hrs_adv_cancelled, $hrs_adv_noresponsible));
 
         $cancelled_shifts = [];
         foreach ($angel_overview as $shift) {
             if (
-                $shift['cancel_reason'] != null
+                $shift['cancel_reason'] !== null
                 || ($shift['angels_already_signed_up'] == 0 && $shift['needed_angels'] > 0)
             ) {
-                if ($shift['cancel_reason'] != null) {
+                $shift_start = Carbon::parse($shift['shift_start']);
+                if ($shift['cancel_reason'] !== null) {
+                    $inXhours = Carbon::now()->addHours($hrs_adv_cancelled);
+                    if ($shift_start->greaterThan($inXhours)) {
+                        continue;
+                    }
+
                     $reason = 'shift_cancelled';
                 } else {
+                    $inXhours = Carbon::now()->addHours($hrs_adv_noresponsible);
+                    if ($shift_start->greaterThan($inXhours)) {
+                        continue;
+                    }
+
                     $reason = 'nobody_in_charge';
                 }
 
