@@ -59,6 +59,7 @@ function update_ShiftsFilter_timerange(ShiftsFilter $shiftsFilter, $days)
     if (is_null($start_time)) {
         $now = new DateTime();
         $today = $now->format('Y-m-d');
+
         if (in_array($today, $days)) {
             // Today has shifts, use current time
             $start_time = $now->getTimestamp();
@@ -86,6 +87,17 @@ function update_ShiftsFilter_timerange(ShiftsFilter $shiftsFilter, $days)
             $end->startOfDay()->subSecond(); // the day before
             $end_time = $end->timestamp;
         }
+    }
+
+    // In case we're only filtering by date, we want to get rid of any time value
+    if (config('enable_date_only_shift_filtering')) {
+        $start = Carbon::createFromTimestamp($start_time, Carbon::now()->timezone);
+        $start->setTime(0, 0, 0, 0);
+        $start_time = $start->timestamp;
+
+        $end = Carbon::createFromTimestamp($end_time, Carbon::now()->timezone);
+        $end->setTime(23, 59, 59, 999999);
+        $end_time = $end->timestamp;
     }
 
     $shiftsFilter->setStartTime(check_request_datetime(
@@ -160,14 +172,16 @@ function load_locations(bool $onlyWithActiveShifts = false)
 /**
  * @return array
  */
-function load_days()
+function load_days($limit_past_days = null)
 {
     $days = (new Collection(Db::select(
         '
                 SELECT DISTINCT DATE(`start`) AS `id`, DATE(`start`) AS `name`
-                FROM `shifts`
-                ORDER BY `id`, `name`
-            '
+                FROM `shifts` '
+                . ($limit_past_days != null ? 'WHERE DATE(`start`) >= CURRENT_DATE() - ? ' : '' ) .
+                'ORDER BY `id`, `name`
+            ',
+        [$limit_past_days]
     )))
         ->pluck('id')
         ->toArray();
@@ -253,7 +267,7 @@ function view_user_shifts()
     $user = auth()->user();
 
     $session = session();
-    $days = load_days();
+    $days = load_days(config('limit_to_past_days_in_shift_filter', null));
     $locations = load_locations(true);
     $types = load_types();
 
@@ -282,6 +296,17 @@ function view_user_shifts()
     $shiftsFilter = new ShiftsFilter();
     $shiftsFilter->sessionImport($session->get('shifts-filter'));
     update_ShiftsFilter($shiftsFilter, auth()->can('user_shifts_admin'), $days);
+
+    if (config('hide_locations_in_shift_filter')) {
+        $shiftsFilter->setLocations($locations->pluck('id')->toArray());
+    }
+    if (config('hide_roles_in_shift_filter')) {
+        $shiftsFilter->setTypes(array_column($types, 'id'));
+    }
+    if (config('hide_occupancy_in_shift_filter')) {
+        $shiftsFilter->setFilled([ShiftsFilter::FILLED_FREE, ShiftsFilter::FILLED_FILLED]);
+    }
+
     $session->set('shifts-filter', $shiftsFilter->sessionExport());
 
     $shiftCalendarRenderer = shiftCalendarRendererByShiftFilter($shiftsFilter);
@@ -338,7 +363,7 @@ function view_user_shifts()
             view(__DIR__ . '/../../resources/views/pages/user-shifts.html', [
                 'title'         => shifts_title(),
                 'add_link'      => auth()->can('admin_shifts') ? $link : '',
-                'location_select' => make_select(
+                'location_select' => config('hide_locations_in_shift_filter') ? '' : make_select(
                     $locations,
                     $shiftsFilter->getLocations(),
                     'locations',
@@ -352,15 +377,15 @@ function view_user_shifts()
                     array_combine($days, $formattedDays),
                     $start_day
                 ),
-                'start_time'    => $start_time,
+                'start_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('start_time', 'start_time', $start_time),
                 'end_select'    => html_select_key(
                     'end_day',
                     'end_day',
                     array_combine($days, $formattedDays),
                     $end_day
                 ),
-                'end_time'      => $end_time,
-                'type_select'   => make_select(
+                'end_time_select' => config('enable_date_only_shift_filtering') ? '' : form_time('end_time', 'end_time', $end_time),
+                'type_select'   => config('hide_roles_in_shift_filter') ? '' : make_select(
                     $types,
                     $shiftsFilter->getTypes(),
                     'types',
@@ -370,7 +395,7 @@ function view_user_shifts()
                     $ownAngelTypes,
                     'limit-height',
                 ),
-                'filled_select' => make_select(
+                'filled_select' => config('hide_occupancy_in_shift_filter') ? '' : make_select(
                     $filled,
                     $shiftsFilter->getFilled(),
                     'filled',
@@ -388,11 +413,12 @@ function view_user_shifts()
                 'set_yesterday' => __('Yesterday'),
                 'set_today'     => __('Today'),
                 'set_tomorrow'  => __('Tomorrow'),
-                'set_last_8h'   => __('last 8h'),
-                'set_last_4h'   => __('last 4h'),
-                'set_next_4h'   => __('next 4h'),
-                'set_next_8h'   => __('next 8h'),
-                'random'        => auth()->can('user_shifts') && $canSignUpForShifts ? button(
+                'hourly_quickfilter' => config('enable_date_only_shift_filtering') ? '' :
+                    '<button type="button" class="btn btn-secondary set-time" data-hours="-8">' . __('last 8h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="-4">' . __('last 4h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="4">' . __('next 4h') . '</button>
+                    <button type="button" class="btn btn-secondary set-time" data-hours="8">' . __('next 8h') . '</button>',
+                'random'        => auth()->can('user_shifts') && $canSignUpForShifts && !config('hide_random_in_shift_filter') ? button(
                     url('/shifts/random'),
                     icon('shuffle') . __('shifts.random'),
                     'btn-primary'
