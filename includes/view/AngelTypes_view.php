@@ -801,7 +801,7 @@ function AngelTypes_render_contact_info(AngelType $angeltype)
  * @param bool $admin_angeltypes
  * @return string
  */
-function AngelTypes_list_view($angeltypes, bool $admin_angeltypes)
+function AngelTypes_list_view($angeltypes, bool $admin_angeltypes, bool $admin_user_angeltypes)
 {
     $add = button(
         url('/angeltypes', ['action' => 'edit']),
@@ -810,6 +810,20 @@ function AngelTypes_list_view($angeltypes, bool $admin_angeltypes)
         '',
         __('general.add')
     );
+
+    $tableColumns = [
+                'name' => __('general.name'),
+                'member_count' => icon('people-fill') . ' ' . __('Members'),
+    ] +
+    ($admin_user_angeltypes ? ['pending_count' => icon('hourglass-split') . ' ' . __('Unconfirmed')] : [])
+     + [
+                'is_restricted' => icon('mortarboard-fill') . __('angeltypes.restricted'),
+                'shift_self_signup_allowed' => icon('pencil-square') . __('shift.self_signup.allowed'),
+                'shift_requires_location_access' => icon('door-open-fill') . __('angeltypes.requires_location_access'),
+                'membership' => __('Membership'),
+                'actions' => '',
+            ];
+
     return page_with_title(
         angeltypes_title() . ' ' . ($admin_angeltypes ? $add : ''),
         [
@@ -817,14 +831,7 @@ function AngelTypes_list_view($angeltypes, bool $admin_angeltypes)
             buttons([
                 button(url('/angeltypes/about'), __('angeltypes.about')),
             ]),
-            table([
-                'name' => __('general.name'),
-                'is_restricted' => icon('mortarboard-fill') . __('angeltypes.restricted'),
-                'shift_requires_location_access' => icon('door-open-fill') . __('angeltypes.requires_location_access'),
-                'shift_self_signup_allowed' => icon('pencil-square') . __('shift.self_signup.allowed'),
-                'membership' => __('Membership'),
-                'actions' => '',
-            ], $angeltypes),
+            table($tableColumns, $angeltypes),
         ],
         true,
     );
