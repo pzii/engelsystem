@@ -15,20 +15,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
- * @property int     $id
- * @property string  $name
- * @property string  $description
- * @property string  $contact_name
- * @property string  $contact_dect
- * @property string  $contact_email
- * @property boolean $restricted # If users need an introduction
- * @property boolean $requires_driver_license # If users must have a driver license
- * @property boolean $requires_ifsg_certificate # If users must have a ifsg certificate
- * @property boolean $requires_location_access # If users must have access to the associated location
- * @property boolean $shift_self_signup # Users can sign up for shifts
- * @property boolean $show_on_dashboard # Show on public dashboard
- * @property boolean $hide_register # Hide from registration page
- * @property boolean $hide_on_shift_view # Hide from shift page
+ * @property int         $id
+ * @property string      $name
+ * @property string|null $short_name
+ * @property string      $description
+ * @property string      $contact_name
+ * @property string      $contact_dect
+ * @property string      $contact_email
+ * @property boolean     $restricted # If users need an introduction
+ * @property boolean     $requires_driver_license # If users must have a driver license
+ * @property boolean     $requires_ifsg_certificate # If users must have a ifsg certificate
+ * @property boolean     $requires_location_access # If users must have access to the associated location
+ * @property boolean     $shift_self_signup # Users can sign up for shifts
+ * @property boolean     $show_on_dashboard # Show on public dashboard
+ * @property boolean     $hide_register # Hide from registration page
+ * @property boolean     $hide_on_shift_view # Hide from shift page
  *
  * @property-read Collection|NeededAngelType[] $neededBy
  * @property-read UserAngelType                $pivot
@@ -37,6 +38,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @method static QueryBuilder|AngelType[] whereId($value)
  * @method static QueryBuilder|AngelType[] whereName($value)
+ * @method static QueryBuilder|AngelType[] whereShortName($value)
  * @method static QueryBuilder|AngelType[] whereDescription($value)
  * @method static QueryBuilder|AngelType[] whereContactName($value)
  * @method static QueryBuilder|AngelType[] whereContactDect($value)
@@ -54,6 +56,7 @@ class AngelType extends BaseModel
 
     /** @var array Default attributes */
     protected $attributes = [ // phpcs:ignore
+        'short_name'                => null,
         'description'               => '',
         'contact_name'              => '',
         'contact_dect'              => '',
@@ -75,6 +78,7 @@ class AngelType extends BaseModel
      */
     protected $fillable = [ // phpcs:ignore
         'name',
+        'short_name',
         'description',
 
         'contact_name',
