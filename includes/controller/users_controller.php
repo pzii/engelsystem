@@ -374,6 +374,11 @@ function shiftCalendarRendererByShiftFilter(ShiftsFilter $shiftsFilter)
     unset($needed_angeltypes_source);
     unset($shift_entries_source);
 
+    // Remove cancelled shifts from list, depending on filter settings
+    if (!in_array(ShiftsFilter::FILLED_CANCELLED, $shiftsFilter->getFilled())) {
+        $shifts = $shifts->whereNull('cancel_reason');
+    }
+
     if (
         in_array(ShiftsFilter::FILLED_FREE, $shiftsFilter->getFilled())
         && in_array(ShiftsFilter::FILLED_FILLED, $shiftsFilter->getFilled())
@@ -383,6 +388,16 @@ function shiftCalendarRendererByShiftFilter(ShiftsFilter $shiftsFilter)
 
     $filtered_shifts = [];
     foreach ($shifts as $shift) {
+        if (
+            in_array(ShiftsFilter::FILLED_CANCELLED, $shiftsFilter->getFilled())
+            && $shift->cancel_reason !== null
+        ) {
+            // Always include cancelled shifts if the filter is set to show them,
+            // regardless of the number of needed angels
+            $filtered_shifts[] = $shift;
+            continue;
+        }
+
         $needed_angels_count = 0;
         foreach ($needed_angeltypes[$shift->id] as $needed_angeltype) {
             $taken = 0;

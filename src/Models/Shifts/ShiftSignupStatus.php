@@ -27,6 +27,11 @@ enum ShiftSignupStatus: string
     case OCCUPIED = 'OCCUPIED';
 
     /**
+     * Shift is cancelled (i.e., no signups possible)
+     */
+    case CANCELLED = 'CANCELLED';
+
+    /**
      * User is admin and can do what he wants.
      */
     case ADMIN = 'ADMIN';

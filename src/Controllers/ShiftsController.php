@@ -107,6 +107,8 @@ class ShiftsController extends BaseController
             })
             // Starts soon
             ->where('shifts.start', '>', Carbon::now())
+            // Exclude cancelled shifts
+            ->whereNull('shifts.cancel_reason')
             // Where help needed
             ->where(function (Builder $query): void {
                 $query
