@@ -1389,6 +1389,9 @@ msgid "schedule.import.text"
 msgstr ""
 "Importe erstellen Orte und erstellen, aktualisieren und löschen Schichten anhand eines schedule.xml exportes."
 
+msgid "schedule.import.request_error"
+msgstr "Programm konnte nicht geladen werden."
+
 msgid "schedule.import.load.title"
 msgstr "Programm importieren: Vorschau"
 
@@ -1958,6 +1961,12 @@ msgstr "Nachricht"
 
 msgid "general.angel"
 msgstr "Unterstützer:in"
+
+msgid "angel"
+msgstr "Unterstützer:in"
+
+msgid "general.actions"
+msgstr "Aktionen"
 
 msgid "worklog.add"
 msgstr "Arbeitseinsatz hinzufügen"

@@ -796,6 +796,111 @@ msgstr "Anzahl Sekunden die bei externen Anfragen gewartet wird, zum Beispiel be
 msgid "config.warning_logout"
 msgstr "Änderungen führen zum Logout aller Benutzer!"
 
+msgid "config.maintenance"
+msgstr "Wartungsmodus"
+
+msgid "config.maintenance.info"
+msgstr "Wenn aktiviert, wird das Engelsystem für Wartungsarbeiten offline genommen und für alle Anfragen eine statische Seite angezeigt."
+
+msgid "config.environment"
+msgstr "Umgebung"
+
+msgid "config.environment.info"
+msgstr "Verwende \"development\", um Debugging-Meldungen zu aktivieren (dabei können sensible Inhalte wie Passwörter in Anfragen sichtbar werden!)."
+
+msgid "config.header_items"
+msgstr "Links im Kopfzeilenmenü"
+
+msgid "config.header_items.info"
+msgstr "Verfügbarer Platzhalter für Links: %lang%; Beispiele findest du in config/app.php."
+
+msgid "config.footer_items"
+msgstr "Links im Fußbereich"
+
+msgid "config.footer_items.info"
+msgstr "Verfügbarer Platzhalter für Links: %lang%; Beispiele findest du in config/app.php."
+
+msgid "config.contact_options"
+msgstr "Kontaktmöglichkeiten"
+
+msgid "config.contact_options.info"
+msgstr "Weitere Möglichkeiten, die Ehrenamtskoordination zu kontaktieren, findest du in config/app.php."
+
+msgid "config.documentation_url"
+msgstr "Dokumentations-URL"
+
+msgid "config.documentation_url.info"
+msgstr "Link zur Dokumentation oder Hilfe"
+
+msgid "config.credits.info"
+msgstr "Liste der Mitwirkenden für die Credits-Seite. Markdown kann verwendet werden; dieser Eintrag sollte nicht geändert werden."
+
+msgid "config.setup_admin_password"
+msgstr "Admin-Passwort einrichten"
+
+msgid "config.setup_admin_password.info"
+msgstr "Initiales Admin-Passwort, das bei der ersten Setup-Migration festgelegt wird"
+
+msgid "config.password_algorithm"
+msgstr "Passwort-Hashing-Algorithmus"
+
+msgid "config.password_algorithm.info"
+msgstr "Lege den Algorithmus für `password_verify()` fest. Wenn ein Benutzerpasswort mit einem alten Algorithmus gehasht wurde, wird es bei der Anmeldung in das neue Format umgewandelt. Eine vollständige Liste findest du unter https://secure.php.net/manual/en/password.constants.php."
+
+msgid "config.username_regex"
+msgstr "Regex für Benutzernamen"
+
+msgid "config.username_regex.info"
+msgstr "Regulärer Ausdruck zur Erkennung ungültiger Benutzernamen. Standardmäßig dürfen Benutzernamen nur alphanumerische Zeichen sowie \"-\", \"_\" oder \".\" enthalten."
+
+msgid "config.disabled_user_view_columns"
+msgstr "Ausgeblendete Spalten in der Benutzertabelle"
+
+msgid "config.disabled_user_view_columns.info"
+msgstr "Blendet Spalten in der Benutzeransicht des Backends aus. Mögliche Werte sind alle sortierbaren Parameter der Tabelle."
+
+msgid "config.trusted_proxies"
+msgstr "Vertrauenswürdige Proxys"
+
+msgid "config.trusted_proxies.info"
+msgstr "IP-Adressen vertrauenswürdiger Reverse-Proxys; als Array oder kommagetrennte Liste"
+
+msgid "config.headers"
+msgstr "HTTP-Antwortheader"
+
+msgid "config.headers.info"
+msgstr "Beispiele findest du in config/app.php."
+
+msgid "config.add_headers"
+msgstr "Zusätzliche Header hinzufügen"
+
+msgid "config.oauth"
+msgstr "OAuth-Anbieter"
+
+msgid "config.oauth.info"
+msgstr "Konfiguriere externe Authentifizierungsanbieter; Beispiele findest du in config/app.php."
+
+msgid "config.tshirt_sizes"
+msgstr "Verfügbare T-Shirt-Größen"
+
+msgid "config.tshirt_sizes.info"
+msgstr "Beispiele findest du in config/app.php."
+
+msgid "config.themes"
+msgstr "Unterstützte Themes"
+
+msgid "config.themes.info"
+msgstr "Beispiele findest du in config/app.php."
+
+msgid "config.jwt_algorithm"
+msgstr "JWT-Algorithmus"
+
+msgid "config.metrics"
+msgstr "Buckets für /metrics"
+
+msgid "config.var_dump_server"
+msgstr "var_dump-Server"
+
 msgid "plugin.install.success"
 msgstr "Plugin erfolgreich installiert"
 
