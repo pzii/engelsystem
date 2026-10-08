@@ -19,8 +19,8 @@ msgstr ""
 # Translated plural form must exist to be shown
 msgid "There are unconfirmed angels in %d angel type. Angel type that needs approval:"
 msgid_plural "There are unconfirmed angels in %d angel types. Angel types that need approval:"
-msgstr[0] "There are unconfirmed angels in %d angel type. Angel type that needs approval:"
-msgstr[1] "There are unconfirmed angels in %d angel types. Angel types that need approval:"
+msgstr[0] "There are unconfirmed helpers in %d role type. Role type that needs approval:"
+msgstr[1] "There are unconfirmed helpers in %d role types. Role types that need approval:"
 
 # Translated plural form must exist to be shown
 msgid "%d helper needed"
@@ -560,7 +560,7 @@ msgstr "You joined a role which requires a health instruction. "
 
 msgid "angeltype.driving_license.required.info.here"
 msgstr ""
-"You joined an role which requires a driving license. "
+"You joined a role which requires a driving license. "
 "Please edit your driving license information here: %s."
 
 msgid "angeltype.driving_license.required.info.preview"
@@ -644,7 +644,7 @@ msgid "faq.faq"
 msgstr "FAQ"
 
 msgid "faq.questions_link"
-msgstr "If you don't find an answer, you can <a href=\"%s\">ask Heaven</a>."
+msgstr "If you don't find an answer, you can <a href=\"%s\">ask the Coordination</a>."
 
 msgid "faq.edit"
 msgstr "Edit FAQ entry"
@@ -850,7 +850,7 @@ msgstr "If checked, only admins and members of the role "
 "can see the filter option for this role on the shifts page."
 
 msgid "angeltype.qr"
-msgstr "Join angel type \"%s\" QR code"
+msgstr "Join role \"%s\" via QR code"
 
 msgid "angeltype.qr.expires"
 msgstr "Expires %c"
@@ -1053,7 +1053,7 @@ msgstr ""
 "If a helper is not marked as arrived, a user info removes the not-arrived notification in the helper's system menu."
 
 msgid "user_info.not_arrived_hint"
-msgstr "If you want to sign up for shifts, feel free to drop by Heaven."
+msgstr "If you want to sign up for shifts, please talk to the Coordination."
 
 msgid "email.greeting"
 msgstr "Hi %s,"
@@ -1235,19 +1235,19 @@ msgstr "No role has been created yet. Shifts cannot be created without one."
 
 msgid "shift.sign_out.hint"
 msgstr "You can sign yourself out up to %s hours before the start of the shift. "
-"If you can't attend your shift, ask Heaven to sign you out."
+"If you can't attend your shift, ask the Coordination to sign you out."
 
 msgid "freeload.info.goodie"
 msgstr "You were not present for this shift. "
-"The double length of the shift was deducted from your %s. Please contact Heaven if you have questions."
+"The double length of the shift was deducted from your %s. Please contact the Coordination if you have questions."
 
 msgid "freeload.info"
 msgstr "You were not present for this shift. "
-"Please contact Heaven if you have questions."
+"Please contact the Coordination if you have questions."
 
 msgid "freeload.freeloader.info"
 msgstr "You were not present for at least %s shifts. Therefore, shift registration is blocked. "
-"Please go to Heaven to be unlocked again."
+"Please contact the Coordination to have your account unblocked."
 
 msgid "freeload.freeloaded.info.goodie"
 msgstr ""

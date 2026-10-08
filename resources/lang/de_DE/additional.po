@@ -12,7 +12,7 @@ msgstr ""
 msgid "auth.not-found"
 msgstr ""
 "Es wurde kein User gefunden oder das Passwort ist falsch. Probiere es bitte noch einmal. Wenn das Problem "
-"weiterhin besteht, melde dich im Himmel."
+"weiterhin besteht, melde dich bei der Ehrenamtskoordination."
 
 msgid "validation.password.required"
 msgstr "Bitte gib ein Passwort an."
@@ -253,7 +253,7 @@ msgid "notification.angeltype.added.text"
 msgstr "Eine Beschreibung findest du unter %2$s"
 
 msgid "angeltype.add.success"
-msgstr "Erfolgreich dem Engeltyp beigetreten"
+msgstr "Erfolgreich einem Aufgabenbereich beigetreten"
 
 msgid "notification.shift.deleted"
 msgstr "Deine Schicht wurde gelöscht"
@@ -419,7 +419,7 @@ msgid "config.features"
 msgstr "Features"
 
 msgid "config.enable_dect.info"
-msgstr "Aktiviert DECT-Nummern für Benutzer, Orte und Engeltypen"
+msgstr "Aktiviert DECT-Nummern für Benutzer, Orte und Aufgabenbereiche"
 
 msgid "config.enable_mobile_show"
 msgstr "Anzeigen der Handynummer"
@@ -494,13 +494,13 @@ msgid "config.supporters_can_promote"
 msgstr "Supporter können befördern"
 
 msgid "config.supporters_can_promote.info"
-msgstr "Supporter eines Engeltyps (Team) können andere Benutzer des Engeltyps zu Supportern befördern"
+msgstr "Supporter eines Aufgabenbereichs (Team) können andere Benutzer desselben Aufgabenbereichs zu Supportern befördern"
 
 msgid "config.join_qr_code"
 msgstr "Beitreten QR Code"
 
 msgid "config.join_qr_code.info"
-msgstr "Erlaubt das Beitreten zu einem Engeltypen mit einem QR Code, benötigt app_key"
+msgstr "Erlaubt den Beitritt zu einem Aufgabenbereich per QR-Code; app_key erforderlich"
 
 msgid "config.certificates"
 msgstr "Zertifikate"
@@ -636,8 +636,8 @@ msgstr "App Key"
 
 msgid "config.app_key.info"
 msgstr ""
-"Zufälliger, langer (min. 32 Zeichen) Alphanumerischer oder base64 enkodierter Schlüssel,"
-"u.a. zum Signieren von JWT Tokens beim Beitreten von Engeltypen via Link benutzt."
+"Zufälliger, langer (mind. 32 Zeichen) alphanumerischer oder Base64-kodierter Schlüssel, "
+"der u. a. zum Signieren von JWTs beim Beitritt zu Aufgabenbereichen über einen Link verwendet wird."
 
 msgid "config.database.driver"
 msgstr "Datenbank Typ"
@@ -755,7 +755,7 @@ msgstr "Anwendungs-URL"
 
 msgid "config.url.info"
 msgstr ""
-"URL der Installation (incl. Protokoll, Domain und optionalem Pfad, bspw. https://engel.example.com/helfer). "
+"URL der Installation (inkl. Protokoll, Domain und optionalem Pfad, z. B. https://example.com/helfen). "
 "Benötigt zum Generieren von Links in E-Mails."
 
 msgid "config.api_key"
@@ -785,7 +785,7 @@ msgid "config.jwt_expiration_time"
 msgstr "JWT Gültigkeit"
 
 msgid "config.jwt_expiration_time.info"
-msgstr "Anzahl an Minuten nach denen ein JWT abläuft, bspw für max. Zeit zum Engeltyp beitreten"
+msgstr "Anzahl an Minuten, nach denen ein JWT abläuft, z. B. maximale Zeit für den Beitritt zu einem Aufgabenbereich"
 
 msgid "config.guzzle_timeout"
 msgstr "HTTP Anfrage Timeout"
