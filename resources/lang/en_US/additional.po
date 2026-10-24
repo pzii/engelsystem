@@ -10,7 +10,7 @@ msgstr ""
 "Language: en_US\n"
 
 msgid "auth.not-found"
-msgstr "No user was found or password is wrong. Please try again. If you are still having problems, ask Heaven."
+msgstr "No user was found or the password is wrong. Please try again. If you are still having problems, contact the Coordination."
 
 msgid "validation.password.required"
 msgstr "The password is required."
@@ -195,7 +195,7 @@ msgid "faq.edit.success"
 msgstr "FAQ entry successfully updated."
 
 msgid "question.menu"
-msgstr "Ask Heaven"
+msgstr "Ask the Coordination"
 
 msgid "question.delete.success"
 msgstr "Question deleted successfully."
@@ -252,7 +252,7 @@ msgid "notification.angeltype.added.text"
 msgstr "You can find a description at %2$s"
 
 msgid "angeltype.add.success"
-msgstr "Successfully joined angel type"
+msgstr "Successfully joined a role"
 
 msgid "notification.shift.deleted"
 msgstr "Your shift was deleted"
@@ -418,7 +418,7 @@ msgid "config.features"
 msgstr "Features"
 
 msgid "config.enable_dect.info"
-msgstr "Enables DECT numbers for users, locations and angel types"
+msgstr "Enables DECT numbers for users, locations and role types"
 
 msgid "config.enable_mobile_show"
 msgstr "Display mobile number"
@@ -493,13 +493,13 @@ msgid "config.supporters_can_promote"
 msgstr "Supporters can promote"
 
 msgid "config.supporters_can_promote.info"
-msgstr "Supporters of an angel type (team) can promote other users of the angel type to supporter"
+msgstr "Supporters of a role (team) can promote other members of that role to supporters"
 
 msgid "config.join_qr_code"
 msgstr "Join QR code"
 
 msgid "config.join_qr_code.info"
-msgstr "Allow joining an angel type via generated QR code, requires app_key"
+msgstr "Allow joining a role via a generated QR code; requires app_key"
 
 msgid "config.shift_view.enable_compact_view"
 msgstr "Compact shift view"
@@ -642,8 +642,8 @@ msgstr "App key"
 
 msgid "config.app_key.info"
 msgstr ""
-"Random, long (at least 32 characters) alphanumeric or base64 encoded key, "
-"used for signing i.e. JWT tokens to join angel types by link."
+"Random, long (at least 32 characters) alphanumeric or base64-encoded key, "
+"used to sign JWTs when joining role types via a link."
 
 msgid "config.database.driver"
 msgstr "Database type"
@@ -759,7 +759,7 @@ msgstr "Application URL"
 
 msgid "config.url.info"
 msgstr ""
-"URL of the installation (incl. protocol, domain and optional path, i.e. https://angel.example.com/helping). "
+"URL of the installation (incl. protocol, domain and optional path, e.g. https://example.com/helping). "
 "Required to generate links in emails."
 
 msgid "config.api_key"
@@ -790,7 +790,7 @@ msgid "config.jwt_expiration_time"
 msgstr "JWT expiration time in minutes"
 
 msgid "config.jwt_expiration_time.info"
-msgstr "Number of minutes after a JWT must expire, for example max angel type join time"
+msgstr "Number of minutes until a JWT expires, e.g. the maximum time allowed to join a role type"
 
 msgid "config.guzzle_timeout"
 msgstr "HTTP request timeout"
@@ -829,7 +829,7 @@ msgid "config.contact_options"
 msgstr "Contact options"
 
 msgid "config.contact_options.info"
-msgstr "Other ways to ask heaven, see config/app.php for examples"
+msgstr "Other ways to contact the Coordination are listed in config/app.php"
 
 msgid "config.documentation_url"
 msgstr "Documentation URL"
