@@ -235,7 +235,7 @@ class ShiftCalendarShiftRenderer
         }
 
         $shifts_row = '<li class="list-group-item d-flex flex-wrap align-items-center ' . $this->classBg() . '">';
-        $shifts_row .= '<strong class="me-1">' . AngelType_name_render($angeltype) . ':</strong> ';
+        $shifts_row .= '<strong class="me-1">' . AngelType_name_render($angeltype, false, true) . ':</strong> ';
         $shifts_row .= join(', ', $entry_list);
         $shifts_row .= '</li>';
         return [
