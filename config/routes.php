@@ -159,6 +159,16 @@ $route->addGroup(
                 $route->get('/users/{user_id:(?:\d+|self)}/shifts', 'Api\ShiftsController@entriesByUser');
                 $route->get('/users/{user_id:(?:\d+|self)}/worklogs', 'Api\UsersController@worklogs');
 
+                $route->get('/public', 'Api\PublicController@index');
+                $route->get(
+                    '/public/cancelledopeningtimes/{number_of_hours:\d+}',
+                    'Api\PublicController@cancelledOpeningTimes'
+                );
+                $route->get(
+                    '/public/cancelledopeningtimes/{hours_advance_noresponsible:\d+}/{hours_advance_cancelled:\d+}',
+                    'Api\PublicController@cancelledOpeningTimes2'
+                );
+
                 $route->addRoute(
                     ['POST', 'PUT', 'DELETE', 'PATCH'],
                     '/[{resource:.+}]',
