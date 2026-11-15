@@ -204,6 +204,10 @@ return [
                     'type' => 'boolean',
                     'default' => true,
                 ],
+                'enable_messages' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

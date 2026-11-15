@@ -855,7 +855,7 @@ function User_view(
                             )
                             : ''
                         : '',
-                    $auth->can('user_messages') ?
+                    $auth->can('user_messages') && config('enable_messages', true) ?
                         heading(
                             '<a href="' . url('/messages/' . $user_source->id) . '">'
                             . icon('envelope')
