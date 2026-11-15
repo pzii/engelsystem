@@ -16,7 +16,7 @@ function public_dashboard_view($stats, $free_shifts, $highlighted_news)
 {
     $needed_angels = '';
     $news = '';
-    if ($highlighted_news->isNotEmpty()) {
+    if ($highlighted_news->isNotEmpty() && config('enable_news', true)) {
         $first_news = $highlighted_news->first();
         $news = div('alert alert-warning text-center', [
             '<a href="' . url('/news/' . $first_news->id) . '">'

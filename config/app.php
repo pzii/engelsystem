@@ -188,6 +188,10 @@ return [
             'icon' => 'ui-checks',
             'order' => 20,
             'config' => [
+                'enable_news' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

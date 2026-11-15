@@ -51,6 +51,10 @@ function make_navigation(): array
         'questions'      => ['question.menu', 'question.add'],
     ];
 
+    if (!config('enable_news', true)) {
+        unset($pages['news']);
+    }
+
     foreach ($pages as $menu_page => $options) {
         $options = (array) $options;
         $menu[$options[0]] = [

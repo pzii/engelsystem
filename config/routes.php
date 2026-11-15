@@ -90,15 +90,17 @@ $route->addGroup('/shifts', function (RouteCollector $route): void {
 
 // News
 $route->get('/meetings', 'NewsController@meetings');
-$route->addGroup(
-    '/news',
-    function (RouteCollector $route): void {
-        $route->get('', 'NewsController@index');
-        $route->get('/{news_id:\d+}', 'NewsController@show');
-        $route->post('/{news_id:\d+}', 'NewsController@comment');
-        $route->post('/comment/{comment_id:\d+}', 'NewsController@deleteComment');
-    }
-);
+if (config('enable_news', true)) {
+    $route->addGroup(
+        '/news',
+        function (RouteCollector $route): void {
+            $route->get('', 'NewsController@index');
+            $route->get('/{news_id:\d+}', 'NewsController@show');
+            $route->post('/{news_id:\d+}', 'NewsController@comment');
+            $route->post('/comment/{comment_id:\d+}', 'NewsController@deleteComment');
+        }
+    );
+}
 
 // FAQ
 $route->get('/faq', 'FaqController@index');
