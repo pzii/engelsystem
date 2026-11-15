@@ -204,6 +204,7 @@ class ShiftCalendarRenderer
                         ->whereNull('freeloaded_by')
                         ->count(),
                     'name' => $angeltype->name,
+                    'short_name' => $angeltype->short_name,
                     'restricted' => $angeltype->restricted,
                     'shift_self_signup' => $angeltype->shift_self_signup,
                 ];

@@ -98,8 +98,11 @@ class AngelTypesControllerTest extends ControllerTestCase
 
         $this->setExpects($this->redirect, 'to', ['/angeltypes']);
 
-        $this->request = $this->request->withParsedBody([
+        $this->request = $this->request
+            ->withAttribute('angel_type_id', $this->angelType->id)
+            ->withParsedBody([
             'name' => 'SomeTestAngelType',
+            'short_name' => 'ST',
             'description' => 'Something',
             'contact_name' => 'Foo',
             'contact_dect' => 'DECTNR',
@@ -112,6 +115,8 @@ class AngelTypesControllerTest extends ControllerTestCase
 
         $this->controller->save($this->request);
 
+        $savedAngelType = AngelType::findOrFail($this->angelType->id);
+        $this->assertSame('ST', $savedAngelType->short_name);
         $this->assertTrue($this->log->hasInfoThatContains('angel type'));
         $this->assertHasNotification('angeltype.edit.success');
     }
