@@ -22,6 +22,11 @@ class ShiftsFilter
     public const FILLED_FREE = 0;
 
     /**
+     * Shift is cancelled.
+     */
+    public const FILLED_CANCELLED = 2;
+
+    /**
      * Has the user "user shifts admin" privilege?
      *
      * @var boolean

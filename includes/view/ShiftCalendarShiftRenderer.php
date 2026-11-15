@@ -41,6 +41,11 @@ class ShiftCalendarShiftRenderer
 
         $class = $this->classForSignupState($shift_signup_state);
 
+        // Override class for cancelled shifts with additional styling
+        if ($shift->isCancelled()) {
+            $class = 'secondary border-warning border-3';
+        }
+
         $blocks = ceil(($shift->end->timestamp - $shift->start->timestamp) / ShiftCalendarRenderer::SECONDS_PER_ROW);
         $blocks = max(1, $blocks);
 
@@ -307,14 +312,26 @@ class ShiftCalendarShiftRenderer
             $night_shift = ' <i class="bi-moon-stars"></i>';
         }
 
+        $cancelled_indicator = '';
+        if ($shift->isCancelled()) {
+            $cancelTitle = __('shifts.cancelled');
+            if ($shift->cancel_reason) {
+                $cancelTitle .= ': ' . htmlspecialchars($shift->cancel_reason);
+            }
+            $cancelled_indicator = ' <span class="badge bg-warning text-dark ms-1" title="' . $cancelTitle . '">'
+                . '<i class="bi-x-circle-fill"></i> ' . __('shifts.cancelled')
+                . '</span>';
+        }
+
         $shift_heading = '<span>'
             . $shift->start->format('H:i') . ' &dash; '
             . $shift->end->format('H:i') . ' &mdash; '
             . htmlspecialchars($shift->shiftType->name)
             . $night_shift
+            . $cancelled_indicator
             . '</span>';
 
-        if ($needed_angeltypes_count > 0) {
+        if ($needed_angeltypes_count > 0 && !$shift->isCancelled()) {
             $shift_heading = '<span class="badge bg-light text-danger me-1">' . $needed_angeltypes_count . '</span> ' . $shift_heading;
         }
 
