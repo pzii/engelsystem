@@ -105,8 +105,10 @@ if (config('enable_news', true)) {
 }
 
 // FAQ
-$route->get('/faq', 'FaqController@index');
-$route->get('/faq/tag/{tag_id:\d+}', 'FaqController@tagged');
+if (config('enable_faq', true)) {
+    $route->get('/faq', 'FaqController@index');
+    $route->get('/faq/tag/{tag_id:\d+}', 'FaqController@tagged');
+}
 
 // Questions
 if (config('enable_questions', true)) {

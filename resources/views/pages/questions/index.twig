@@ -36,7 +36,9 @@
             <h1>
                 {{ block('title') }}
                 {% if is_admin | default(false) %}
-                    {{ m.button(m.icon('question-lg'), url('/faq'), {'title': __('faq.faq')}) }}
+                    {% if config('enable_faq', true) %}
+                        {{ m.button(m.icon('question-lg'), url('/faq'), {'title': __('faq.faq')}) }}
+                    {% endif %}
                 {% else %}
                     {{ m.add(url('/questions/new')) }}
                 {% endif %}
@@ -50,7 +52,7 @@
                 <div class="col-md-12">
                     {% block questions %}
                         {% block faq_text %}
-                            {% if can('faq.view') %}
+                            {% if can('faq.view') and config('enable_faq', true) %}
                                 {% if not is_admin | default(false) %}
                                     <p>
                                         {{ __('question.faq_link', [url('/faq')]) | raw }}

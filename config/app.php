@@ -200,6 +200,10 @@ return [
                     'type' => 'boolean',
                     'default' => true,
                 ],
+                'enable_faq' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

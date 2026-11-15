@@ -39,7 +39,9 @@
         </div>
 
         <div class="col-md-12">
-            <p>{{ __('angeltype.about.text', [url('/faq')])|raw }}</p>
+            {% if config('enable_faq', true) %}
+                <p>{{ __('angeltype.about.text', [url('/faq')])|raw }}</p>
+            {% endif %}
         </div>
 
         <div class="row">
