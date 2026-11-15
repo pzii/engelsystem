@@ -64,7 +64,7 @@ ready(() => {
     const toDay = document.getElementById('end_day');
     const toTime = document.getElementById('end_time');
 
-    if (!fromDay || !fromTime || !toDay || !toTime) {
+    if (!fromDay || !toDay) {
       console.warn('cannot set input date because of missing field');
       return;
     }
