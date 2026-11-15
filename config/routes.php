@@ -89,7 +89,9 @@ $route->addGroup('/shifts', function (RouteCollector $route): void {
 });
 
 // News
-$route->get('/meetings', 'NewsController@meetings');
+if (config('enable_meetings', true)) {
+    $route->get('/meetings', 'NewsController@meetings');
+}
 if (config('enable_news', true)) {
     $route->addGroup(
         '/news',

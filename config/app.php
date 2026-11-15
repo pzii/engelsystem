@@ -192,6 +192,10 @@ return [
                     'type' => 'boolean',
                     'default' => true,
                 ],
+                'enable_meetings' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

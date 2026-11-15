@@ -54,6 +54,9 @@ function make_navigation(): array
     if (!config('enable_news', true)) {
         unset($pages['news']);
     }
+    if (!config('enable_meetings', true)) {
+        unset($pages['meetings']);
+    }
 
     foreach ($pages as $menu_page => $options) {
         $options = (array) $options;
