@@ -196,6 +196,10 @@ return [
                     'type' => 'boolean',
                     'default' => true,
                 ],
+                'enable_questions' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

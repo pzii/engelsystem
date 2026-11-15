@@ -32,7 +32,7 @@
 
         <div class="row">
             {% block questions_text %}
-                {% if can('question.add') %}
+                {% if can('question.add') and config('enable_questions', true) %}
                     <p>{{ __('faq.questions_link', [url('/questions')]) | raw }}</p>
                 {% endif %}
             {% endblock %}
@@ -112,7 +112,7 @@
             {% endblock %}
 
             {% block ask_question %}
-                {% if can('question.add') %}
+                {% if can('question.add') and config('enable_questions', true) %}
                     <form action="{{ url('/questions/new') }}" enctype="multipart/form-data" method="post">
                         {{ csrf() }}
                         <div class="col-md-12">

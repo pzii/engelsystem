@@ -57,6 +57,9 @@ function make_navigation(): array
     if (!config('enable_meetings', true)) {
         unset($pages['meetings']);
     }
+    if (!config('enable_questions', true)) {
+        unset($pages['questions']);
+    }
 
     foreach ($pages as $menu_page => $options) {
         $options = (array) $options;

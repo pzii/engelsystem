@@ -109,15 +109,17 @@ $route->get('/faq', 'FaqController@index');
 $route->get('/faq/tag/{tag_id:\d+}', 'FaqController@tagged');
 
 // Questions
-$route->addGroup(
-    '/questions',
-    function (RouteCollector $route): void {
-        $route->get('', 'QuestionsController@index');
-        $route->post('', 'QuestionsController@delete');
-        $route->get('/new', 'QuestionsController@add');
-        $route->post('/new', 'QuestionsController@save');
-    }
-);
+if (config('enable_questions', true)) {
+    $route->addGroup(
+        '/questions',
+        function (RouteCollector $route): void {
+            $route->get('', 'QuestionsController@index');
+            $route->post('', 'QuestionsController@delete');
+            $route->get('/new', 'QuestionsController@add');
+            $route->post('/new', 'QuestionsController@save');
+        }
+    );
+}
 
 // Messages
 $route->addGroup(
