@@ -188,6 +188,26 @@ return [
             'icon' => 'ui-checks',
             'order' => 20,
             'config' => [
+                'enable_news' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
+                'enable_meetings' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
+                'enable_questions' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
+                'enable_faq' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
+                'enable_messages' => [
+                    'type' => 'boolean',
+                    'default' => true,
+                ],
                 'enable_dect' => [
                     'name' => 'general.dect',
                     'type' => 'boolean',

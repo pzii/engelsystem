@@ -89,43 +89,53 @@ $route->addGroup('/shifts', function (RouteCollector $route): void {
 });
 
 // News
-$route->get('/meetings', 'NewsController@meetings');
-$route->addGroup(
-    '/news',
-    function (RouteCollector $route): void {
-        $route->get('', 'NewsController@index');
-        $route->get('/{news_id:\d+}', 'NewsController@show');
-        $route->post('/{news_id:\d+}', 'NewsController@comment');
-        $route->post('/comment/{comment_id:\d+}', 'NewsController@deleteComment');
-    }
-);
+if (config('enable_meetings', true)) {
+    $route->get('/meetings', 'NewsController@meetings');
+}
+if (config('enable_news', true)) {
+    $route->addGroup(
+        '/news',
+        function (RouteCollector $route): void {
+            $route->get('', 'NewsController@index');
+            $route->get('/{news_id:\d+}', 'NewsController@show');
+            $route->post('/{news_id:\d+}', 'NewsController@comment');
+            $route->post('/comment/{comment_id:\d+}', 'NewsController@deleteComment');
+        }
+    );
+}
 
 // FAQ
-$route->get('/faq', 'FaqController@index');
-$route->get('/faq/tag/{tag_id:\d+}', 'FaqController@tagged');
+if (config('enable_faq', true)) {
+    $route->get('/faq', 'FaqController@index');
+    $route->get('/faq/tag/{tag_id:\d+}', 'FaqController@tagged');
+}
 
 // Questions
-$route->addGroup(
-    '/questions',
-    function (RouteCollector $route): void {
-        $route->get('', 'QuestionsController@index');
-        $route->post('', 'QuestionsController@delete');
-        $route->get('/new', 'QuestionsController@add');
-        $route->post('/new', 'QuestionsController@save');
-    }
-);
+if (config('enable_questions', true)) {
+    $route->addGroup(
+        '/questions',
+        function (RouteCollector $route): void {
+            $route->get('', 'QuestionsController@index');
+            $route->post('', 'QuestionsController@delete');
+            $route->get('/new', 'QuestionsController@add');
+            $route->post('/new', 'QuestionsController@save');
+        }
+    );
+}
 
 // Messages
-$route->addGroup(
-    '/messages',
-    function (RouteCollector $route): void {
-        $route->get('', 'MessagesController@index');
-        $route->post('', 'MessagesController@redirectToConversation');
-        $route->get('/{user_id:\d+}', 'MessagesController@messagesOfConversation');
-        $route->post('/{user_id:\d+}', 'MessagesController@send');
-        $route->post('/{user_id:\d+}/{msg_id:\d+}', 'MessagesController@delete');
-    }
-);
+if (config('enable_messages', true)) {
+    $route->addGroup(
+        '/messages',
+        function (RouteCollector $route): void {
+            $route->get('', 'MessagesController@index');
+            $route->post('', 'MessagesController@redirectToConversation');
+            $route->get('/{user_id:\d+}', 'MessagesController@messagesOfConversation');
+            $route->post('/{user_id:\d+}', 'MessagesController@send');
+            $route->post('/{user_id:\d+}/{msg_id:\d+}', 'MessagesController@delete');
+        }
+    );
+}
 
 // API
 $route->addGroup(

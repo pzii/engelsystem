@@ -99,7 +99,7 @@
                 {% if is_user() %}
                     {{ _self.toolbar_item(menuUserShiftState(user), url('/shifts', {'action': 'next'}), '', 'clock', __('shift.next')) }}
 
-                    {% if can('user_messages') %}
+                    {% if can('user_messages') and config('enable_messages', true) %}
                         {{ _self.toolbar_item(
                             '<span class="d-xxl-none">' ~ __('message.title') ~ '</span>'
                             ~ (user_messages ? ' <span class="badge bg-danger">' ~ user_messages ~ '</span>' : ''),
